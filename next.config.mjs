@@ -8,6 +8,10 @@ const nextConfig = {
         hostname: "ghchart.rshah.org",
         port: "443",
       },
+      {
+        protocol: "https",
+        hostname: "avatars.githubusercontent.com",
+      },
     ],
   },
 
