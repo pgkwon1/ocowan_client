@@ -1,7 +1,7 @@
 import { api } from "@/modules/ApiInstance";
 
 export const apiGithubLogin = async (code: string) => {
-  const { result, data } = await api.post(
+  const { data, result } = await api.post(
     `/github/login`,
     {
       code,
@@ -12,6 +12,5 @@ export const apiGithubLogin = async (code: string) => {
       },
     }
   );
-
-  return { result, data };
+  return { data, result };
 };

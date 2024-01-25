@@ -13,8 +13,23 @@ const githubReducers = createSlice({
   },
   reducers: {
     setLoginData: (state, action) => {
-      console.log(action.payload);
-      state = Object.assign(state, action.payload);
+      const {
+        login,
+        avatar_url,
+        bio,
+        followers,
+        following,
+        public_repos,
+        isLogin,
+      } = action.payload;
+      state.login = login;
+      state.avatar_url = avatar_url;
+      state.bio = bio;
+      state.followers = followers;
+      state.following = following;
+      state.public_repos = public_repos;
+      state.isLogin = isLogin;
+      console.log(state);
     },
   },
 });

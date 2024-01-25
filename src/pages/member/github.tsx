@@ -6,6 +6,7 @@ import Router from "next/router";
 import { useEffect } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useDispatch } from "react-redux";
+import Cookies from "js-cookie";
 
 export default function Github() {
   const query = useSearchParams();
@@ -16,10 +17,11 @@ export default function Github() {
     "githubLogin",
     async (code: string) => await apiGithubLogin(code),
     {
-      onSuccess: ({ result, data }) => {
+      onSuccess: ({ data, result }) => {
         if (result) {
-          data.isLogin = true;
-          dispatch(setLoginData(data));
+          data.login.isLogin = true;
+          dispatch(setLoginData(data.login));
+          Cookies.set("token", data.token);
           router.push("/");
         }
       },
