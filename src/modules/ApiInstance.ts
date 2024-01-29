@@ -12,6 +12,16 @@ export const api = axios.create({
   },
 });
 
+api.interceptors.request.use((request) => {
+  if (request.method !== "get" && request.url !== "/github/login") {
+    const token = Cookies.get("token");
+    if (!token) {
+      Promise.reject(401);
+    }
+    request.headers.Authorization = `Bearer ${token}`;
+  }
+  return request;
+});
 api.interceptors.response.use((response) => {
   return response.data;
 });
