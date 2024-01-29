@@ -1,4 +1,5 @@
 import Layout from "@/components/Layout";
+import Toast, { setGlobalToast } from "@/components/Toast";
 import { store } from "@/store/store";
 import "@/styles/globals.css";
 import { AxiosError } from "axios";
@@ -16,6 +17,7 @@ export default function App({ Component, pageProps }: AppProps) {
     mutationCache: new MutationCache({
       onError(error) {
         if (error instanceof AxiosError && error.response?.status === 401) {
+          setGlobalToast("다시 로그인 해주세요.");
           router.push("/member/logout");
         }
       },
@@ -26,7 +28,9 @@ export default function App({ Component, pageProps }: AppProps) {
       <PersistGate persistor={persistor}>
         <QueryClientProvider client={client}>
           <Layout>
-            <Component {...pageProps} />
+            <Toast>
+              <Component {...pageProps} />
+            </Toast>
           </Layout>
         </QueryClientProvider>
       </PersistGate>
