@@ -49,7 +49,9 @@ export default function Toast({ children }: { children: ReactElement }) {
             data-dismiss-target="#toast-success"
             aria-label="Close"
           >
-            <span className="sr-only">Close</span>
+            <span className="sr-only" onClick={() => setShow(false)}>
+              Close
+            </span>
             <svg
               className="w-3 h-3"
               aria-hidden="true"
