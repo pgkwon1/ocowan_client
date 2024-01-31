@@ -7,3 +7,14 @@
 body {
   font-family: "D2 Coding", monospace;
 }
+
+.react-calendar__navigation__arrow {
+  display: none;
+}
+.ocowan {
+  background: url("../images/ocowan.png") center/cover !important;
+}
+
+.react-calendar__tile {
+  padding: 21px 9px !important;
+}

@@ -1,14 +1,15 @@
-import LoadingSpinner from "@/components/LoadingSpinner";
+import Ocowan from "@/components/Ocowan";
 import Profile from "@/components/Profile";
 import Link from "next/link";
 import GitHubCalendar from "react-github-calendar";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import Calendar from "@/components/Calendar";
 
 export default function Home() {
-  const dispatch = useDispatch();
   const { login, avatar_url, bio, followers, isLogin } = useSelector(
     (state) => state.githubReducer
   );
+
   return (
     <main className="flex-1 flex items-center justify-center ">
       <div className="bg-white p-8 shadow-md rounded-md">
@@ -26,7 +27,6 @@ export default function Home() {
               followers={followers}
               bio={bio}
             />
-
             <div className="max-w-lg mx-auto bg-white dark:bg-gray-900 rounded-lg overflow-hidden shadow-lg mt-8">
               <GitHubCalendar
                 username={login}
@@ -34,6 +34,10 @@ export default function Home() {
                 hideTotalCount={true}
                 hideColorLegend={true}
               />
+            </div>
+            <Ocowan />
+            <div className="max-w-lg mx-auto bg-white dark:bg-gray-900 rounded-lg overflow-hidden shadow-lg mt-8">
+              <Calendar />
             </div>
           </>
         ) : (
