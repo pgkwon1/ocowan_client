@@ -5,6 +5,7 @@ export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   validateStatus: (status) => {
     if (status === 401) {
+      console.log("api", status);
       Promise.reject(401);
       return false;
     }
@@ -13,11 +14,8 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((request) => {
-  if (request.method !== "get" && request.url !== "/github/login") {
+  if (request.url !== "/github/login") {
     const token = Cookies.get("token");
-    if (!token) {
-      Promise.reject(401);
-    }
     request.headers.Authorization = `Bearer ${token}`;
   }
   return request;
