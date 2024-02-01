@@ -16,6 +16,8 @@ export default function Ocowan() {
         if (result && typeof result === "object") {
           return await ocowanMutate.mutate(result.total_count);
         }
+        const isError = true;
+        setGlobalToast("조회된 컨트리뷰션이 없습니다.", isError);
       },
     }
   );
