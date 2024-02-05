@@ -3,10 +3,11 @@ import { setOcowan } from "@/store/reducers/ocowan.reducer";
 import { useMutation } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { setGlobalToast } from "./Toast";
+import { IRootReducer } from "@/store/reducer.dto";
 
 export default function Ocowan() {
-  const { login } = useSelector((state) => state.githubReducer);
-  const { ocowan } = useSelector((state) => state.ocowanReducer);
+  const { login } = useSelector((state: IRootReducer) => state.githubReducer);
+  const { ocowan } = useSelector((state: IRootReducer) => state.ocowanReducer);
   const dispatch = useDispatch();
   const checkMutation = useMutation(
     ["check", login],

@@ -4,11 +4,15 @@ import Link from "next/link";
 import GitHubCalendar from "react-github-calendar";
 import { useSelector } from "react-redux";
 import Calendar from "@/components/Calendar";
+import InstaGram from "@/components/Instagram";
+import { IRootReducer } from "@/store/reducer.dto";
 
 export default function Home() {
   const { login, avatar_url, bio, followers, isLogin } = useSelector(
-    (state) => state.githubReducer
+    (state: IRootReducer) => state.githubReducer
   );
+
+  const { ocowan } = useSelector((state: IRootReducer) => state.ocowanReducer);
 
   return (
     <main className="flex-1 flex items-center justify-center ">
