@@ -4,7 +4,6 @@ import Link from "next/link";
 import GitHubCalendar from "react-github-calendar";
 import { useSelector } from "react-redux";
 import Calendar from "@/components/Calendar";
-import InstaGram from "@/components/Instagram";
 import { IRootReducer } from "@/store/reducer.dto";
 
 export default function Home() {
