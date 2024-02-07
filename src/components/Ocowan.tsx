@@ -27,12 +27,12 @@ export default function Ocowan() {
     ["ocowan", login],
     async (total_count: number) => await apiOcowan(login, total_count),
     {
-      onSuccess(data, variables, context) {
-        if (data.data === true) {
-          dispatch(setOcowan({ ocowan: true }));
+      onSuccess({ result, total_count }, variables, context) {
+        if (result.data) {
+          dispatch(setOcowan({ ocowan: true, total_count: total_count }));
           setGlobalToast("오코완 완료!");
         } else {
-          dispatch(setOcowan({ ocowan: true }));
+          dispatch(setOcowan({ ocowan: true, total_count: total_count }));
           setGlobalToast("이미 오코완 되었습니다.");
         }
       },
