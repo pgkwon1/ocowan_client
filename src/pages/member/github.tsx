@@ -17,8 +17,8 @@ export default function Github() {
     "githubLogin",
     async (code: string) => await apiGithubLogin(code),
     {
-      onSuccess: ({ data, result }) => {
-        if (result) {
+      onSuccess: ({ data }) => {
+        if (data) {
           data.login.isLogin = true;
           dispatch(setLoginData(data.login));
           Cookies.set("token", data.token);
