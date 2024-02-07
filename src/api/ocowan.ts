@@ -20,7 +20,10 @@ export const apiOcowan = async (login: string, total_count: number) => {
     login,
     total_count,
   });
-  return result;
+  return {
+    result,
+    total_count,
+  };
 };
 
 export const apiGetOcowan = async (login: string) => {

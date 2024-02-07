@@ -4,13 +4,13 @@ export const ocowanReducers = createSlice({
   name: "ocowanReducer",
   initialState: {
     ocowan: false,
-    ocowan_date: "",
+    total_count: 0,
   },
 
   reducers: {
     setOcowan(state, action) {
       state.ocowan = action.payload.ocowan;
-      state.ocowan_date = action.payload.ocowan_date;
+      state.total_count = action.payload.total_count;
     },
   },
 });
