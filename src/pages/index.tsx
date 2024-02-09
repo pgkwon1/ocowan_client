@@ -14,8 +14,8 @@ export default function Home() {
   const { ocowan } = useSelector((state: IRootReducer) => state.ocowanReducer);
 
   return (
-    <main className="flex-1 flex items-center justify-center ">
-      <div className="bg-white p-8 shadow-md rounded-md">
+    <main className="max-w-lg mx-auto bg-white dark:bg-gray-900 rounded-lg overflow-hidden shadow-lg mt-8">
+      <div className="flex gap-8 flex-col p-8 shadow-md rounded-md">
         <h2 className="text-center text-2xl font-semibold mb-4">
           매일 코딩하자!!
         </h2>
@@ -30,18 +30,14 @@ export default function Home() {
               followers={followers}
               bio={bio}
             />
-            <div className="max-w-lg mx-auto bg-white dark:bg-gray-900 rounded-lg overflow-hidden shadow-lg mt-8">
-              <GitHubCalendar
-                username={login}
-                errorMessage="로딩에 실패하였습니다 다시 로그인해주세요."
-                hideTotalCount={true}
-                hideColorLegend={true}
-              />
-            </div>
+            <GitHubCalendar
+              username={login}
+              errorMessage="로딩에 실패하였습니다 다시 로그인해주세요."
+              hideTotalCount={true}
+              hideColorLegend={true}
+            />
             <Ocowan />
-            <div className="max-w-lg mx-auto bg-white dark:bg-gray-900 rounded-lg overflow-hidden shadow-lg mt-8">
-              <Calendar />
-            </div>
+            <Calendar />
           </>
         ) : (
           <div className="flex flex-col mt-4">
