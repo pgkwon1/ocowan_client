@@ -17,10 +17,11 @@ export default function Github() {
     "githubLogin",
     async (code: string) => await apiGithubLogin(code),
     {
-      onSuccess: ({ data }) => {
-        if (data) {
-          data.login.isLogin = true;
-          dispatch(setLoginData(data.login));
+      onSuccess: (result) => {
+        if (result.result) {
+          const { data } = result;
+          data.data.isLogin = true;
+          dispatch(setLoginData(data.data));
           Cookies.set("token", data.token);
           router.push("/");
         }
