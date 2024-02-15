@@ -5,33 +5,34 @@ interface IOcowan {
   total_count: number;
 }
 export const apiCheck = async (login: string) => {
-  const result = await api.get(`/ocowan/check/${login}`);
-  if (result.data === false) {
+  const { data } = await api.get(`/ocowan/check/${login}`);
+  if (data.result === false) {
     return false;
   }
-  const total_count = result.data;
+  const total_count = data.data;
   return {
     total_count,
   };
 };
 
 export const apiOcowan = async (login: string, total_count: number) => {
-  const result = await api.post(`/ocowan`, {
+  const { data } = await api.post(`/ocowan`, {
     login,
     total_count,
   });
+  console.log("data", data);
   return {
-    result,
-    total_count,
+    data: data.data,
+    total_count: data.total_count,
   };
 };
 
 export const apiGetOcowan = async (login: string) => {
-  const result = await api.get(`/ocowan/${login}`);
-  return result.data.length > 0
-    ? result.data.map((ocowan: IOcowan) => ({
-        ocowan_date: ocowan.ocowan_date,
-        total_count: ocowan.total_count,
-      }))
+  const { data } = await api.get(`/ocowan/${login}`);
+  console.log("dat", data);
+  return data.length > 0
+    ? data.data.map((ocowan: IOcowan) => (
+        ocowan.ocowan_date,
+    ))
     : [];
 };

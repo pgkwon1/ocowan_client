@@ -27,8 +27,8 @@ export default function Ocowan() {
     ["ocowan", login],
     async (total_count: number) => await apiOcowan(login, total_count),
     {
-      onSuccess({ result, total_count }, variables, context) {
-        if (result.data) {
+      onSuccess({ data, total_count }) {
+        if (data) {
           dispatch(setOcowan({ ocowan: true, total_count: total_count }));
           setGlobalToast("오코완 완료!");
         } else {
