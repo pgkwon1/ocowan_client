@@ -22,6 +22,8 @@ export default function App({ Component, pageProps }: AppProps) {
     defaultOptions: {
       queries: {
         retry: 0,
+        staleTime: 120000,
+        cacheTime: 120000,
       },
     },
     queryCache: new QueryCache({
@@ -29,6 +31,8 @@ export default function App({ Component, pageProps }: AppProps) {
         if (error instanceof AxiosError && error.response?.status === 401) {
           setGlobalToast("다시 로그인 해주세요.");
           router.push("/member/logout");
+        } else {
+          setGlobalToast("데이터를 불러오는데 실패하였습니다.");
         }
       },
     }),
@@ -37,6 +41,8 @@ export default function App({ Component, pageProps }: AppProps) {
         if (error instanceof AxiosError && error.response?.status === 401) {
           setGlobalToast("다시 로그인 해주세요.");
           router.push("/member/logout");
+        } else {
+          setGlobalToast("오류가 발생하였습니다.");
         }
       },
     }),
