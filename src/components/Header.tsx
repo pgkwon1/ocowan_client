@@ -9,11 +9,18 @@ export default function Header() {
   return (
     <div className="min-h-40 flex flex-col">
       <header className="py-4 px-8 flex justify-between items-center">
-        <img src="/logo.png" alt="OCOWAN Logo" className="w-40 h-auto" />
+        <Link href="/">
+          <img src="/logo.png" alt="OCOWAN Logo" className="w-40 h-auto" />
+        </Link>
         {isLogin && login ? (
-          <Link href="/member/logout">
-            <button className="text-3xl text-white font-bold">LOGOUT</button>
-          </Link>
+          <>
+            <Link href="/bigthree/">
+              <button className="text-3xl text-white font-bold">3대측정</button>
+            </Link>
+            <Link href="/member/logout">
+              <button className="text-3xl text-white font-bold">LOGOUT</button>
+            </Link>
+          </>
         ) : (
           ""
         )}

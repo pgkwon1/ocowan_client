@@ -1,6 +1,7 @@
 export interface IRootReducer {
   githubReducer: IGithubReducer;
   ocowanReducer: IOcowanReducer;
+  bigthreeReducer: IBigThreeReducer;
 }
 
 interface IGithubReducer {
@@ -15,4 +16,10 @@ interface IGithubReducer {
 interface IOcowanReducer {
   ocowan: false;
   ocowan_date: boolean;
+}
+interface IBigThreeReducer {
+  pullReqCount: number;
+  issueCount: number;
+  commitCount: number;
+  isCheck: boolean;
 }

@@ -4,9 +4,11 @@ import storage from "redux-persist/lib/storage";
 import { configureStore } from "@reduxjs/toolkit";
 import githubReducer from "./reducers/github.reducer";
 import ocowanReducer from "./reducers/ocowan.reducer";
+import bigthreeReducer from "./reducers/bigthree.reducer";
 const rootReducer = combineReducers({
   githubReducer,
   ocowanReducer,
+  bigthreeReducer,
 });
 const persistConfig = {
   key:
@@ -14,7 +16,7 @@ const persistConfig = {
       ? process.env.NEXT_PUBLIC_PERSIST_KEY
       : "",
   storage: storage,
-  whiteList: ["githubReducer", "ocowanReducer"],
+  whiteList: ["githubReducer", "ocowanReducer", "bigthreeReducer"],
 };
 
 const rootPersistReducer = persistReducer(persistConfig, rootReducer);
