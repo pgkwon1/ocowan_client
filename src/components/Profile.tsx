@@ -1,17 +1,11 @@
+import { IRootReducer } from "@/store/reducer.dto";
 import Link from "next/link";
+import { useSelector } from "react-redux";
 
-interface IProfileProps {
-  login: string;
-  avatar_url: string;
-  followers: number;
-  bio: string;
-}
-export default function Profile({
-  login,
-  avatar_url,
-  followers,
-  bio,
-}: IProfileProps) {
+export default function Profile() {
+  const { login, avatar_url, bio, followers, isLogin } = useSelector(
+    (state: IRootReducer) => state.githubReducer
+  );
   return (
     <div className="max-w-lg mx-auto bg-white dark:bg-gray-900 rounded-lg overflow-hidden shadow-lg">
       <div className="border-b px-4 pb-6">

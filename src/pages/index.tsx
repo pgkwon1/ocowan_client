@@ -7,7 +7,7 @@ import Calendar from "@/components/Calendar";
 import { IRootReducer } from "@/store/reducer.dto";
 
 export default function Home() {
-  const { login, avatar_url, bio, followers, isLogin } = useSelector(
+  const { login, isLogin } = useSelector(
     (state: IRootReducer) => state.githubReducer
   );
 
@@ -23,12 +23,7 @@ export default function Home() {
       </p>
       {isLogin && login !== "" ? (
         <>
-          <Profile
-            login={login}
-            avatar_url={avatar_url}
-            followers={followers}
-            bio={bio}
-          />
+          <Profile />
           <GitHubCalendar
             username={login}
             errorMessage="로딩에 실패하였습니다 다시 로그인해주세요."
