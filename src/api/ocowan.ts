@@ -29,7 +29,8 @@ export const apiOcowan = async (login: string, total_count: number) => {
 
 export const apiGetOcowan = async (login: string) => {
   const { data } = await api.get(`/ocowan/${login}`);
-  return data.length > 0
+  console.log(data);
+  return data.data.length > 0
     ? data.data.map((ocowan: IOcowan) => ocowan.ocowan_date)
     : [];
 };
