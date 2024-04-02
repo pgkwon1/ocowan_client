@@ -38,9 +38,14 @@ export default function App({ Component, pageProps }: AppProps) {
     }),
     mutationCache: new MutationCache({
       onError(error) {
-        if (error instanceof AxiosError && error.response?.status === 401) {
-          setGlobalToast("다시 로그인 해주세요.");
-          router.push("/member/logout");
+        if (error instanceof AxiosError && error.response !== undefined) {
+          const { status } = error.response;
+          if (status === 401) {
+            setGlobalToast("다시 로그인 해주세요.", true);
+            router.push("/member/logout");
+          } else {
+            setGlobalToast(error.response.data.message, true);
+          }
         } else {
           setGlobalToast("오류가 발생하였습니다.");
         }
