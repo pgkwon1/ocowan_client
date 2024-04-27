@@ -7,7 +7,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
     <div className="flex flex-col">
       <Header />
       <div className="min-h-screen">
-        <main className="max-w-lg mx-auto bg-white dark:bg-gray-900 rounded-lg overflow-hidden shadow-lg mt-8">
+        <main className="max-w-2xl mx-auto bg-white dark:bg-gray-900 rounded-lg overflow-hidden shadow-lg mt-8">
           <div className="flex gap-8 flex-col p-8 shadow-md rounded-md">
             {children}
           </div>
