@@ -25,6 +25,9 @@ export default function App({ Component, pageProps }: AppProps) {
         staleTime: 120000,
         cacheTime: 120000,
       },
+      mutations: {
+        retry: 0,
+      },
     },
     queryCache: new QueryCache({
       onError(error) {
