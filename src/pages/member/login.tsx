@@ -1,6 +1,16 @@
+import { setCallback } from "@/store/reducers/github.reducer";
+import { GetServerSidePropsContext } from "next";
 import Link from "next/link";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 
-export default function Login() {
+export default function Login({ callback }: { callback: string }) {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (callback !== "") {
+      dispatch(setCallback(callback));
+    }
+  }, [callback]);
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -37,3 +47,11 @@ export default function Login() {
     </>
   );
 }
+
+export const getServerSideProps = (context: GetServerSidePropsContext) => {
+  return {
+    props: {
+      callback: context.query.callback,
+    },
+  };
+};

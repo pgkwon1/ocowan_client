@@ -10,6 +10,7 @@ const githubReducers = createSlice({
     following: 0,
     public_repos: 0,
     isLogin: false,
+    callback: "",
   },
   reducers: {
     setLoginData: (state, action) => {
@@ -29,10 +30,13 @@ const githubReducers = createSlice({
       state.following = following;
       state.public_repos = public_repos;
       state.isLogin = isLogin;
-      console.log(state);
+    },
+
+    setCallback(state, action) {
+      state.callback = action.payload;
     },
   },
 });
 
-export const { setLoginData } = githubReducers.actions;
+export const { setLoginData, setCallback } = githubReducers.actions;
 export default githubReducers.reducer;

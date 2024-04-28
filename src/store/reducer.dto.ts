@@ -12,6 +12,7 @@ interface IGithubReducer {
   following: number;
   public_repos: number;
   isLogin: boolean;
+  callback: string;
 }
 interface IOcowanReducer {
   ocowan: false;
