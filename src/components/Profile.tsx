@@ -7,7 +7,7 @@ export default function Profile() {
     (state: IRootReducer) => state.githubReducer
   );
   return (
-    <div className="max-w-lg mx-auto bg-white dark:bg-gray-900 rounded-lg overflow-hidden shadow-lg">
+    <div className="min-w-full mx-auto bg-white dark:bg-gray-900 rounded-lg overflow-hidden shadow-lg">
       <div className="border-b px-4 pb-6">
         <div className="text-center my-4">
           <img
