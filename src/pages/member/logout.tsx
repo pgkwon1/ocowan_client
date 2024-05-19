@@ -1,4 +1,4 @@
-import { setLoginData } from "@/store/reducers/github.reducer";
+import { setLoginData } from "@/store/reducers/users.reducer";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";

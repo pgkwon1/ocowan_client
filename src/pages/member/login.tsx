@@ -1,4 +1,4 @@
-import { setCallback } from "@/store/reducers/github.reducer";
+import { setCallback } from "@/store/reducers/users.reducer";
 import { GetServerSidePropsContext } from "next";
 import Link from "next/link";
 import { useEffect } from "react";

@@ -1,9 +1,8 @@
-import { ICommonResponseData } from "@/common/response.interface";
 import { api } from "@/modules/ApiInstance";
 
-export const apiGithubLogin = async (code: string) => {
+export const apiLogin = async (code: string) => {
   const { data } = await api.post(
-    `/github/login`,
+    `/users/login`,
     {
       code,
     },

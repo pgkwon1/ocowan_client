@@ -1,5 +1,5 @@
-import { apiGithubLogin } from "@/api/member/github";
-import { setCallback, setLoginData } from "@/store/reducers/github.reducer";
+import { apiLogin } from "@/api/member/users";
+import { setCallback, setLoginData } from "@/store/reducers/users.reducer";
 import axios from "axios";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Router from "next/router";
@@ -20,7 +20,7 @@ export default function Github() {
 
   let loginMutation = useMutation(
     "githubLogin",
-    async (code: string) => await apiGithubLogin(code),
+    async (code: string) => await apiLogin(code),
     {
       onSuccess: (result) => {
         if (result.result) {
