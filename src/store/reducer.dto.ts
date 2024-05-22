@@ -1,10 +1,11 @@
 export interface IRootReducer {
-  githubReducer: IUsersReducer;
+  usersReducer: IUsersReducer;
   ocowanReducer: IOcowanReducer;
   bigthreeReducer: IBigThreeReducer;
 }
 
 interface IUsersReducer {
+  id: string;
   login: string;
   avatar_url: string;
   bio: string;

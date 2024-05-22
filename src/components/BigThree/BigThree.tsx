@@ -8,7 +8,7 @@ import { setGlobalToast } from "../Toast";
 import { setBigThree } from "@/store/reducers/bigthree.reducer";
 
 export default function BigThree() {
-  const { login } = useSelector((state: IRootReducer) => state.githubReducer);
+  const { login } = useSelector((state: IRootReducer) => state.usersReducer);
   const dispatch = useDispatch();
   const { data, refetch } = useQuery(
     ["getBigThree", login],

@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const githubReducers = createSlice({
-  name: "githubReducer",
+const usersReducer = createSlice({
+  name: "usersReducer",
   initialState: {
     login: "",
     avatar_url: "",
@@ -38,5 +38,5 @@ const githubReducers = createSlice({
   },
 });
 
-export const { setLoginData, setCallback } = githubReducers.actions;
-export default githubReducers.reducer;
+export const { setLoginData, setCallback } = usersReducer.actions;
+export default usersReducer.reducer;

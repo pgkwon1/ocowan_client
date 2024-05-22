@@ -8,7 +8,7 @@ import { IRootReducer } from "@/store/reducer.dto";
 
 export default function Home() {
   const { login, isLogin } = useSelector(
-    (state: IRootReducer) => state.githubReducer
+    (state: IRootReducer) => state.usersReducer
   );
 
   const { ocowan } = useSelector((state: IRootReducer) => state.ocowanReducer);

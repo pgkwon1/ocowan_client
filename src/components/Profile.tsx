@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 
 export default function Profile() {
   const { login, avatar_url, bio, followers, isLogin } = useSelector(
-    (state: IRootReducer) => state.githubReducer
+    (state: IRootReducer) => state.usersReducer
   );
   return (
     <div className="min-w-full mx-auto bg-white dark:bg-gray-900 rounded-lg overflow-hidden shadow-lg">

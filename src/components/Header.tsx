@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 
 export default function Header() {
   const { isLogin, login } = useSelector(
-    (state: IRootReducer) => state.githubReducer
+    (state: IRootReducer) => state.usersReducer
   );
   return (
     <div className="min-h-40 flex flex-col">

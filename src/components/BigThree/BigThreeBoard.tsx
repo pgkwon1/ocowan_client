@@ -6,7 +6,7 @@ import { setGlobalToast } from "@/components/Toast";
 import CountUp from "react-countup";
 
 export default function BigThreeBoard() {
-  const { login } = useSelector((state: IRootReducer) => state.githubReducer);
+  const { login } = useSelector((state: IRootReducer) => state.usersReducer);
 
   const { data, isLoading } = useQuery(
     ["getBigThree", login],

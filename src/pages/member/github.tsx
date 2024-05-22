@@ -14,9 +14,7 @@ export default function Github() {
   const router = useRouter();
   const dispatch = useDispatch();
   const code = query.get("code");
-  const { callback } = useSelector(
-    (state: IRootReducer) => state.githubReducer
-  );
+  const { callback } = useSelector((state: IRootReducer) => state.usersReducer);
 
   let loginMutation = useMutation(
     "githubLogin",

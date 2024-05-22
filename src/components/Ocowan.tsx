@@ -6,7 +6,7 @@ import { setGlobalToast } from "./Toast";
 import { IRootReducer } from "@/store/reducer.dto";
 
 export default function Ocowan() {
-  const { login } = useSelector((state: IRootReducer) => state.githubReducer);
+  const { login } = useSelector((state: IRootReducer) => state.usersReducer);
   const { ocowan } = useSelector((state: IRootReducer) => state.ocowanReducer);
   const dispatch = useDispatch();
   const checkMutation = useMutation(

@@ -7,7 +7,7 @@ import { apiGetOcowan } from "@/api/ocowan";
 import { setOcowan } from "@/store/reducers/ocowan.reducer";
 import { IRootReducer } from "@/store/reducer.dto";
 export default function OcowanCalendar() {
-  const { login } = useSelector((state: IRootReducer) => state.githubReducer);
+  const { login } = useSelector((state: IRootReducer) => state.usersReducer);
   const dispatch = useDispatch();
   const { data } = useQuery(
     ["getOcowan", login],
