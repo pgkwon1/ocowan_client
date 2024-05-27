@@ -15,9 +15,9 @@ export const apiCheck = async (login: string) => {
   };
 };
 
-export const apiOcowan = async (login: string, total_count: number) => {
+export const apiOcowan = async (id: string, total_count: number) => {
   const { data } = await api.post(`/ocowan`, {
-    login,
+    users_id: id,
     total_count,
   });
   console.log("data", data);
@@ -29,7 +29,6 @@ export const apiOcowan = async (login: string, total_count: number) => {
 
 export const apiGetOcowan = async (login: string) => {
   const { data } = await api.get(`/ocowan/${login}`);
-  console.log(data);
   return data.data.length > 0
     ? data.data.map((ocowan: IOcowan) => ocowan.ocowan_date)
     : [];
