@@ -18,3 +18,6 @@ body {
 .react-calendar__tile {
   padding: 21px 9px !important;
 }
+.english {
+  font-family: "Inter var", sans-serif;
+}

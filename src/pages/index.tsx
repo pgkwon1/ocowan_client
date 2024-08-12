@@ -15,14 +15,12 @@ export default function Home() {
 
   return (
     <>
-      <h2 className="text-center text-2xl font-semibold mb-4">
-        매일 코딩하자!!
-      </h2>
-      <p className="text-gray-600 text-center font-bold">
-        오운완 처럼 오코완으로도 인증해보자.
-      </p>
       {isLogin && login !== "" ? (
         <>
+          <div className="font-extrabold text-xl text-center font-size-[3rem] box-decoration-slice text-white bg-gradient-to-r from-indigo-600 to-pink-500 leading-[3.5rem] px-2 english">
+            매일매일 오코완 <br />
+            오코완 : 오늘도 코딩 완료
+          </div>
           <Profile />
           <GitHubCalendar
             username={login}
