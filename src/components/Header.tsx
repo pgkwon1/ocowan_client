@@ -17,7 +17,7 @@ export default function Header() {
     <div className="min-h-40 flex flex-col">
       <header className="py-4 px-8 flex justify-center items-center gap-8">
         <Link href="/">
-          <span className=" english box-decoration-slice bg-gradient-to-r from-indigo-600 to-pink-500 text-white px-2 ...">
+          <span className="text-xl font-extrabold	py-2 box-decoration-slice bg-gradient-to-r from-indigo-600 to-pink-500 text-white px-2 ...">
             OCOWAN
           </span>
         </Link>
