@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { setGlobalToast } from "../Toast";
 
 export default function BigThreeChart() {
-  const { login } = useSelector((state: IRootReducer) => state.githubReducer);
+  const { login } = useSelector((state: IRootReducer) => state.usersReducer);
 
   const { data } = useQuery(
     ["getBigThreeWeekly", login],
