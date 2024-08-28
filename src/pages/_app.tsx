@@ -59,7 +59,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <Provider store={store}>
       <PersistGate persistor={persistor}>
         <QueryClientProvider client={client}>
-          <Layout>
+          <Layout isLayoutDisplay={pageProps.isLayoutDisplay}>
             <Toast>
               <Component {...pageProps} />
             </Toast>
