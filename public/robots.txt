@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://ocowan.vercel.app
+
+# Sitemaps
+Sitemap: https://ocowan.vercel.app/sitemap.xml
