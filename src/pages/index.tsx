@@ -5,6 +5,7 @@ import GitHubCalendar from "react-github-calendar";
 import { useSelector } from "react-redux";
 import Calendar from "@/components/Calendar";
 import { IRootReducer } from "@/store/reducer.dto";
+import Levels from "@/components/users/level";
 
 export default function Home() {
   const { login, isLogin } = useSelector(
@@ -28,6 +29,7 @@ export default function Home() {
             hideTotalCount={true}
             hideColorLegend={true}
           />
+          <Levels />
           <Ocowan />
           <Calendar />
         </>

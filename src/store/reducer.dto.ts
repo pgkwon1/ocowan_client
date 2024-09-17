@@ -14,6 +14,10 @@ interface IUsersReducer {
   public_repos: number;
   isLogin: boolean;
   callback: string;
+  levels: {
+    level: number;
+    exp: number;
+  };
 }
 interface IOcowanReducer {
   ocowan: false;
