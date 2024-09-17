@@ -1,4 +1,4 @@
-import { setLoginData } from "@/store/reducers/users.reducer";
+import { resetData } from "@/store/reducers/users.reducer";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
@@ -8,7 +8,7 @@ export default function Logout() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setLoginData({}));
+    dispatch(resetData());
     router.push("/");
   });
 }
