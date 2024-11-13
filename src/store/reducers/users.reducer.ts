@@ -35,7 +35,7 @@ const usersReducer = createSlice({
       state.following = following;
       state.public_repos = public_repos;
       state.isLogin = isLogin;
-      state.levels.level = levels.levels ?? 1;
+      state.levels.level = levels.level ?? 1;
       state.levels.exp = levels.exp ?? 0;
     },
 
