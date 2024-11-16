@@ -1,3 +1,10 @@
+export const EXPINFO = {
+  OCOWAN_EXP: 10,
+  PR_EXP: 20,
+  ISSUE_EXP: 10,
+  COMMIT_EXP: 1,
+};
+
 type levelInfo = {
   expMin: number;
   expMax: number;
