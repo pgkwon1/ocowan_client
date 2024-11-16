@@ -4,6 +4,9 @@ import { useMutation } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { setGlobalToast } from "./Toast";
 import { IRootReducer } from "@/store/reducer.dto";
+import { setLevelsData } from "@/store/reducers/users.reducer";
+import { apiIncrementExp } from "@/api/member/levels";
+import { EXPINFO } from "@/constants/levels.constants";
 
 export default function Ocowan() {
   const { login } = useSelector((state: IRootReducer) => state.usersReducer);
@@ -30,11 +33,29 @@ export default function Ocowan() {
       onSuccess({ data, total_count }) {
         if (data) {
           dispatch(setOcowan({ ocowan: true, total_count: total_count }));
+
+          incrementExpMutate.mutate();
           setGlobalToast("오코완 완료!");
         } else {
           dispatch(setOcowan({ ocowan: true, total_count: total_count }));
           setGlobalToast("이미 오코완 되었습니다.");
         }
+      },
+    }
+  );
+
+  const incrementExpMutate = useMutation(
+    ["increment", login],
+    async () => await apiIncrementExp(EXPINFO.OCOWAN_EXP),
+    {
+      onSuccess({ data: levelData }) {
+        const { level, exp } = levelData;
+        dispatch(
+          setLevelsData({
+            level,
+            exp,
+          })
+        );
       },
     }
   );

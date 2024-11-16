@@ -6,21 +6,76 @@ import { useDispatch, useSelector } from "react-redux";
 import BigThreeBoard from "./BigThreeBoard";
 import { setGlobalToast } from "../Toast";
 import { setBigThree } from "@/store/reducers/bigthree.reducer";
+import { apiIncrementExp } from "@/api/member/levels";
+import { EXPINFO } from "@/constants/levels.constants";
+import { setLevelsData } from "@/store/reducers/users.reducer";
 
 export default function BigThree() {
   const { login } = useSelector((state: IRootReducer) => state.usersReducer);
+  const {
+    commitCount: currentCommitCount,
+    issueCount: currentIssueCount,
+    pullReqCount: currentPullReqCount,
+  } = useSelector((state: IRootReducer) => state.bigthreeReducer);
+
+  const currentBigThree =
+    (currentCommitCount ?? 0) +
+    (currentIssueCount ?? 0) +
+    (currentPullReqCount ?? 0);
   const dispatch = useDispatch();
   const { data, refetch } = useQuery(
     ["getBigThree", login],
     async () => await apiGetBigThree(),
     {
-      onSuccess(data) {
+      async onSuccess(data) {
         const { pullReqCount, issueCount, commitCount } = data;
+        const updateBigThree: number =
+          (commitCount ?? 0) + (issueCount ?? 0) + (pullReqCount ?? 0);
+
+        // 세 항목 각각 다 경험치 계산하여 경험치 증가.
+        if (updateBigThree > currentBigThree) {
+          const pullReqExp =
+            pullReqCount > currentPullReqCount
+              ? (pullReqCount - currentPullReqCount) * EXPINFO.PR_EXP
+              : 0;
+          const issueExp =
+            issueCount > currentIssueCount
+              ? (issueCount - currentIssueCount) * EXPINFO.ISSUE_EXP
+              : 0;
+          const commitExp =
+            commitCount > currentCommitCount
+              ? (commitCount - currentCommitCount) * EXPINFO.COMMIT_EXP
+              : 0;
+
+          const totalExp = pullReqExp + issueExp + commitExp;
+
+          if (totalExp > 0) {
+            await incrementExpMutate.mutate(totalExp);
+          }
+        }
+
         dispatch(
           setBigThree({
             pullReqCount,
             issueCount,
             commitCount,
+          })
+        );
+      },
+    }
+  );
+
+  const incrementExpMutate = useMutation(
+    ["increment", login],
+    async (exp: number) => await apiIncrementExp(exp),
+    {
+      onSuccess({ data }) {
+        const { exp, level } = data;
+        console.log(exp, level);
+        dispatch(
+          setLevelsData({
+            exp,
+            level,
           })
         );
       },

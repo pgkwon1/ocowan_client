@@ -12,7 +12,9 @@ export default function BigThreeChart() {
     ["getBigThreeWeekly", login],
     async () => await apiGetBigThreeWeekly(),
     {
-      onSuccess(data) {},
+      onSuccess(data) {
+        console.log(data);
+      },
     }
   );
   const ReactApexChart = dynamic(() => import("react-apexcharts"));
