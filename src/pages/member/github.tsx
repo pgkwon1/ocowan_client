@@ -25,7 +25,7 @@ export default function Github() {
           const { data } = result;
           data.data.isLogin = true;
           dispatch(setLoginData(data.data));
-          Cookies.set("token", data.token);
+          localStorage.setItem("token", data.token);
 
           if (callback === "") {
             router.push("/");

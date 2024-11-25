@@ -14,7 +14,7 @@ export const api = axios.create({
 
 api.interceptors.request.use((request) => {
   if (request.url !== "/github/login") {
-    const token = Cookies.get("token");
+    const token = localStorage.getItem("token");
     request.headers.Authorization = `Bearer ${token}`;
   }
   return request;
