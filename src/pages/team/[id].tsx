@@ -3,7 +3,7 @@ import TeamInvite from "@/components/team/Invite";
 import { IRootReducer } from "@/store/reducer.dto";
 import { GetServerSidePropsContext } from "next";
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
@@ -57,78 +57,88 @@ export default function TeamInfo({ id }: { id: string }) {
           }));
 
           setTeamMember(teamInfo.teamMember);
-          const data = await apiGetMemberBigThree(id);
-
-          setBigThree(data);
+          const response = await apiGetMemberBigThree(id);
+          setBigThree(response.data);
         }
       },
     }
   );
 
   useEffect(() => {
-    bigThree.length > 0 &&
-      setChartData(() => {
-        return bigThree.map((member) => ({
-          name: member.length > 0 ? member[0].login : "",
-          data: member?.map(
-            (data: { pullReqCount: any; issueCount: any; commitCount: any }) =>
-              data?.pullReqCount + data?.issueCount + data?.commitCount
-          ),
-        }));
-      });
+    bigThree.length > 0 && setChartData(handleMemberBigThree);
   }, [bigThree]);
 
-  const options: ApexCharts.ApexOptions = {
-    chart: {
-      type: "line",
-      dropShadow: {
-        enabled: true,
-        color: "#000",
-        top: 18,
-        left: 7,
-        blur: 10,
-        opacity: 0.2,
-      },
-      toolbar: {
-        show: false,
-      },
-    },
+  const handleMemberBigThree = useMemo(() => {
+    return bigThree.map((member) => ({
+      name: Array.isArray(member) && member.length > 0 ? member[0].login : "",
+      data: member?.map(
+        (data: { pullReqCount: any; issueCount: any; commitCount: any }) =>
+          data?.pullReqCount + data?.issueCount + data?.commitCount
+      ),
+    }));
+  }, [bigThree]);
 
-    colors: ["#9333ea", "#545454"],
-    dataLabels: {
-      enabled: true,
-    },
-    stroke: {
-      curve: "monotoneCubic",
-    },
-    title: {
-      text: "최근 7일 측정 통계",
-      align: "center",
-    },
-    grid: {
-      borderColor: "#e7e7e7",
-      row: {
-        colors: ["#f3f3f3", "transparent"],
-        opacity: 0.5,
+  const options: ApexCharts.ApexOptions = useMemo(
+    () => ({
+      chart: {
+        type: "line",
+        dropShadow: {
+          enabled: true,
+          color: "#000",
+          top: 18,
+          left: 7,
+          blur: 10,
+          opacity: 0.2,
+        },
+        toolbar: {
+          show: false,
+        },
       },
-    },
-    markers: {
-      size: 0.5,
-    },
-    xaxis: {},
-    yaxis: {
+      series: [
+        {
+          name: "pgkwon1",
+          data: [30, 40, 35, 50, 49, 60, 70, 91, 125],
+        },
+      ],
+
+      colors: ["#9333ea", "#545454"],
+      dataLabels: {
+        enabled: true,
+      },
+      stroke: {
+        curve: "monotoneCubic",
+      },
       title: {
-        text: "",
+        text: "최근 7일 측정 통계",
+        align: "center",
       },
-    },
-    legend: {
-      position: "top",
-      horizontalAlign: "right",
-      floating: true,
-      offsetY: -5,
-      offsetX: -5,
-    },
-  };
+      grid: {
+        borderColor: "#e7e7e7",
+        row: {
+          colors: ["#f3f3f3", "transparent"],
+          opacity: 0.5,
+        },
+      },
+      markers: {
+        size: 0.5,
+      },
+
+      xaxis: {},
+      yaxis: {
+        title: {
+          text: "",
+        },
+      },
+      legend: {
+        position: "top",
+        horizontalAlign: "right",
+        floating: true,
+        offsetY: -5,
+        offsetX: -5,
+      },
+    }),
+    []
+  );
 
   return (
     <div className="flex flex-col items-center gap-8">
@@ -196,7 +206,7 @@ export default function TeamInfo({ id }: { id: string }) {
           </div>
         )}
       </div>
-      <Chart series={chartData} options={options} />
+      <Chart width={"100%"} series={chartData} options={options} />
     </div>
   );
 }
