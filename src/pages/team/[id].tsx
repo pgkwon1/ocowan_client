@@ -25,8 +25,6 @@ interface ITeamMember {
 }
 export default function TeamInfo({ id }: { id: string }) {
   const [bigThree, setBigThree] = useState<any[]>([]);
-  const [teamInfo, setTeamInfo] = useState<ITeamInfo>();
-  const [open, setOpen] = useState(false);
   const [teamMember, setTeamMember] = useState<ITeamMember[]>([]);
   const [chartData, setChartData] = useState<any[]>([]);
   const [isLeader, setIsLeader] = useState(false);
@@ -41,22 +39,11 @@ export default function TeamInfo({ id }: { id: string }) {
     {
       async onSuccess(result) {
         if (result) {
-          const teamInfo = result.data;
-          const { name, description, leader, logo, member_count } = teamInfo;
-          if (teamInfo.leader === login) {
+          if (result.leader === login) {
             setIsLeader(true);
           }
 
-          setTeamInfo((current) => ({
-            ...current,
-            name,
-            description,
-            leader,
-            logo,
-            member_count,
-          }));
-
-          setTeamMember(teamInfo.teamMember);
+          setTeamMember(result.teamMember);
           const response = await apiGetMemberBigThree(id);
           setBigThree(response.data);
         }
@@ -154,7 +141,7 @@ export default function TeamInfo({ id }: { id: string }) {
           )}
           <img
             className="h-32 w-32 rounded-full border-4 border-white dark:border-gray-800 mx-auto my-4"
-            src={`${teamInfo?.logo}`}
+            src={`${data?.logo}`}
             alt=""
           />
           <h3 className="font-bold text-2xl text-gray-800 dark:text-white mb-2">
