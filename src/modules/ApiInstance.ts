@@ -1,11 +1,11 @@
-import axios from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import Cookies from "js-cookie";
 
 export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   validateStatus: (status) => {
-    if (status === 401) {
-      Promise.reject(401);
+    if (status >= 400 && status <= 599) {
+      Promise.reject(status);
       return false;
     }
     return true;
@@ -19,13 +19,16 @@ api.interceptors.request.use((request) => {
   }
   return request;
 });
+api.interceptors.response.use((response: AxiosResponse) => {
+  return response.data;
+});
 export const formDataApi = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   headers: {
     "Content-Type": "multipart/form-data",
   },
   validateStatus: (status) => {
-    if (status === 401 || status === 400) {
+    if (status >= 400 && status <= 599) {
       Promise.reject(status);
       return false;
     }
@@ -39,4 +42,8 @@ formDataApi.interceptors.request.use((request) => {
     request.headers.Authorization = `Bearer ${token}`;
   }
   return request;
+});
+
+formDataApi.interceptors.response.use((response: AxiosResponse) => {
+  return response;
 });

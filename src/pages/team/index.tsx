@@ -20,7 +20,7 @@ export default function TeamIndex() {
     async () => await apiGetTeamList(page),
     {
       onSuccess(result) {
-        const { count, teamList } = result.data;
+        const { count, teamList } = result;
 
         setTeamList(teamList);
         setTotalCount(count);

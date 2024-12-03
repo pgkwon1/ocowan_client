@@ -34,8 +34,14 @@ export default function App({ Component, pageProps }: AppProps) {
         if (error instanceof AxiosError && error.response?.status === 401) {
           setGlobalToast("다시 로그인 해주세요.");
           router.push("/member/logout");
+        } else if (
+          error instanceof AxiosError &&
+          error.response?.status === 404
+        ) {
+          setGlobalToast("데이터를 불러오는데 실패하였습니다 .");
+          router.push("/");
         } else {
-          setGlobalToast("데이터를 불러오는데 실패하였습니다.");
+          setGlobalToast("오류가 발생하였습니다.");
         }
       },
     }),

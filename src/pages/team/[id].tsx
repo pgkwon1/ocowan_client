@@ -45,7 +45,7 @@ export default function TeamInfo({ id }: { id: string }) {
 
           setTeamMember(result.teamMember);
           const response = await apiGetMemberBigThree(id);
-          setBigThree(response.data);
+          setBigThree(response);
         }
       },
     }
@@ -141,7 +141,7 @@ export default function TeamInfo({ id }: { id: string }) {
           )}
           <img
             className="h-32 w-32 rounded-full border-4 border-white dark:border-gray-800 mx-auto my-4"
-            src={`${data?.logo}`}
+            src={`${data.logo}`}
             alt=""
           />
           <h3 className="font-bold text-2xl text-gray-800 dark:text-white mb-2">
