@@ -9,9 +9,8 @@ export const apiCheck = async (login: string) => {
   if (data === false) {
     return false;
   }
-  const total_count = data.data;
   return {
-    total_count,
+    total_count: data,
   };
 };
 
@@ -29,6 +28,6 @@ export const apiOcowan = async (id: string, total_count: number) => {
 export const apiGetOcowan = async (login: string) => {
   const { data } = await api.get(`/ocowan/${login}`);
   return data.length > 0
-    ? data.data.map((ocowan: IOcowan) => ocowan.ocowan_date)
+    ? data.map((ocowan: IOcowan) => ocowan.ocowan_date)
     : [];
 };
