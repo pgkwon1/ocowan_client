@@ -1,7 +1,7 @@
 import { api } from "@/modules/ApiInstance";
 
 export const apiGetBigThree = async () => {
-  const { data } = (await api.get(`/bigthrees`)).data;
+  const { data } = await api.get(`/bigthrees`);
   const { pullReqCount, issueCount, commitCount } = data;
 
   return {
@@ -12,7 +12,7 @@ export const apiGetBigThree = async () => {
 };
 
 export const apiGetBigThreeWeekly = async () => {
-  const { data } = (await api.get(`/bigthrees/weekly`)).data;
+  const { data } = await api.get(`/bigthrees/weekly`);
   const weeklyData = data.map(
     (day: any, index: number) =>
       day.pullReqCount + day.issueCount + day.commitCount
