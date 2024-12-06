@@ -6,7 +6,7 @@ interface IOcowan {
 }
 export const apiCheck = async (login: string) => {
   const { data } = await api.get(`/ocowan/check/${login}`);
-  if (data.result === false) {
+  if (data === false) {
     return false;
   }
   const total_count = data.data;
@@ -20,7 +20,6 @@ export const apiOcowan = async (id: string, total_count: number) => {
     users_id: id,
     total_count,
   });
-  console.log("data", data);
   return {
     data: data.data,
     total_count: data.total_count,
