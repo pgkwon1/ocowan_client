@@ -13,11 +13,11 @@ const Layout = ({
   return (
     <div className="flex flex-col">
       {isLayoutDisplay ? <Header /> : ""}
-      <div className="min-h-screen">
+      <div className="min-h-screen px-5 md:px-0">
         <Levels />
 
-        <main className="max-w-2xl mx-auto bg-white dark:bg-gray-900 rounded-lg overflow-hidden shadow-lg mt-8">
-          <div className="flex gap-8 flex-col p-8 shadow-md rounded-md">
+        <main className="max-w-4xl min-w-2xl mx-auto bg-white dark:bg-gray-900 rounded-lg overflow-hidden shadow-lg mt-8">
+          <div className="flex gap-8 flex-col p-8 shadow-md rounded-md ">
             {children}
           </div>
         </main>
