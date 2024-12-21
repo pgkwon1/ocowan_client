@@ -21,18 +21,16 @@ export default function Github() {
     async (code: string) => await apiLogin(code),
     {
       onSuccess: (result) => {
-        if (result.result) {
-          const { data } = result;
-          data.data.isLogin = true;
-          dispatch(setLoginData(data.data));
-          localStorage.setItem("token", data.token);
+        const { data, token } = result;
+        data.isLogin = true;
+        dispatch(setLoginData(data));
+        localStorage.setItem("token", token);
 
-          if (callback === "") {
-            router.push("/");
-          } else {
-            dispatch(setCallback(""));
-            router.push(callback);
-          }
+        if (callback === "") {
+          router.push("/");
+        } else {
+          dispatch(setCallback(""));
+          router.push(callback);
         }
       },
     }
