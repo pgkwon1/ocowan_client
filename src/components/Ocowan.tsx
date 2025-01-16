@@ -1,6 +1,6 @@
 import { apiCheck, apiOcowan } from "@/api/ocowan";
 import { setOcowan } from "@/store/reducers/ocowan.reducer";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { setGlobalToast } from "./Toast";
 import { IRootReducer } from "@/store/reducer.dto";
@@ -12,57 +12,54 @@ export default function Ocowan() {
   const { login } = useSelector((state: IRootReducer) => state.usersReducer);
   const { ocowan } = useSelector((state: IRootReducer) => state.ocowanReducer);
   const dispatch = useDispatch();
-  const checkMutation = useMutation(
-    ["check", login],
-    async () => await apiCheck(login),
-    {
-      async onSuccess(result) {
-        if (result && typeof result === "object") {
-          return await ocowanMutate.mutate(result.total_count);
-        }
-        const isError = true;
-        setGlobalToast("조회된 컨트리뷰션이 없습니다.", isError);
-      },
-    }
-  );
+  const checkMutation = useMutation({
+    mutationKey: ["check", login],
+    mutationFn: async () => await apiCheck(login),
+    async onSuccess(result) {
+      if (result && typeof result === "object") {
+        return await ocowanMutate.mutate(result.total_count);
+      }
+      const isError = true;
+      setGlobalToast("조회된 컨트리뷰션이 없습니다.", isError);
+    },
+  });
 
-  const ocowanMutate = useMutation(
-    ["ocowan", login],
-    async (total_count: number) => await apiOcowan(login, total_count),
-    {
-      onSuccess({ data, total_count }) {
-        if (data) {
-          dispatch(setOcowan({ ocowan: true, total_count: total_count }));
+  const ocowanMutate = useMutation({
+    mutationKey: ["ocowan", login],
+    mutationFn: async (total_count: number) =>
+      await apiOcowan(login, total_count),
 
-          incrementExpMutate.mutate();
-          setGlobalToast("오코완 완료!");
-        } else {
-          dispatch(setOcowan({ ocowan: true, total_count: total_count }));
-          setGlobalToast("이미 오코완 되었습니다.");
-        }
-      },
-    }
-  );
+    onSuccess({ data, total_count }: { data: any; total_count: number }) {
+      if (data) {
+        dispatch(setOcowan({ ocowan: true, total_count: total_count }));
 
-  const incrementExpMutate = useMutation(
-    ["increment", login],
-    async () => await apiIncrementExp(EXPINFO.OCOWAN_EXP),
-    {
-      onSuccess({ data: levelData }) {
-        const { level, exp } = levelData;
-        dispatch(
-          setLevelsData({
-            level,
-            exp,
-          })
-        );
-      },
-    }
-  );
+        incrementExpMutate.mutate();
+        setGlobalToast("오코완 완료!");
+      } else {
+        dispatch(setOcowan({ ocowan: true, total_count: total_count }));
+        setGlobalToast("이미 오코완 되었습니다.");
+      }
+    },
+  });
+
+  const incrementExpMutate = useMutation({
+    mutationKey: ["increment", login],
+    mutationFn: async () => await apiIncrementExp(EXPINFO.OCOWAN_EXP),
+
+    onSuccess({ data: levelData }) {
+      const { level, exp } = levelData;
+      dispatch(
+        setLevelsData({
+          level,
+          exp,
+        })
+      );
+    },
+  });
 
   return (
     <div className="flex justify-center">
-      {checkMutation.isLoading ? (
+      {checkMutation.isPending ? (
         <button
           disabled
           type="button"

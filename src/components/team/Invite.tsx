@@ -3,7 +3,7 @@ import { IRootReducer } from "@/store/reducer.dto";
 import moment from "moment-timezone";
 import { useEffect, useRef, useState } from "react";
 import Countdown from "react-countdown";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { setGlobalToast } from "../Toast";
 
@@ -18,19 +18,15 @@ export default function TeamInvite({
   const [isCreate, setIsCreate] = useState(false);
   const [link, setLink] = useState("");
 
-  const inviteMutation = useMutation(
-    ["invite", id],
-    async () => await apiCreateInviteCode(id),
-    {
-      onSuccess(response) {
-        if (response.result === true) {
-          const { data } = response;
-          setLink(`${process.env.NEXT_PUBLIC_DOMAIN}team/invite/${data.token}`);
-          setIsCreate(true);
-        }
-      },
-    }
-  );
+  const inviteMutation = useMutation({
+    mutationKey: ["invite", id],
+    mutationFn: async () => await apiCreateInviteCode(id),
+
+    onSuccess(data) {
+      setLink(`${process.env.NEXT_PUBLIC_DOMAIN}team/invite/${data.token}`);
+      setIsCreate(true);
+    },
+  });
 
   const handleLink = async () => {
     open === false && isCreate === false ? await inviteMutation.mutate() : null;
@@ -53,6 +49,7 @@ export default function TeamInvite({
                 <button
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
                   onClick={async () => {
+                    console.log(link);
                     await navigator.clipboard.writeText(link);
                     setGlobalToast("복사되었습니다.");
                   }}

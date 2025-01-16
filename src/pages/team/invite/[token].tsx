@@ -7,8 +7,8 @@ import { setGlobalToast } from "@/components/Toast";
 import { IRootReducer } from "@/store/reducer.dto";
 import { GetServerSidePropsContext } from "next";
 import { useRouter } from "next/router";
-import { useState } from "react";
-import { useMutation, useQuery } from "react-query";
+import { useEffect, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import { api } from "@/modules/ApiInstance";
@@ -29,9 +29,9 @@ export default function InviteTeam({ token }: { token: string }) {
     createdAt: "",
     updatedAt: "",
   });
-  const { data } = useQuery(
-    ["getTeam", token],
-    async () => {
+  const { data, isSuccess } = useQuery({
+    queryKey: ["getTeam", token],
+    queryFn: async () => {
       if (isLogin && login) {
         return await apiGetTeamInfoByInviteCode(token);
       } else {
@@ -47,48 +47,48 @@ export default function InviteTeam({ token }: { token: string }) {
         return false;
       }
     },
-    {
-      async onSuccess(response) {
-        if (response.result === true) {
-          const now = moment();
-          if (now.isAfter(response.expire_time)) {
-            const isError = true;
-            setGlobalToast("만료된 초대코드 입니다.", isError);
-            router.push(`/`);
-            return false;
-          }
-          const { data } = response;
-          const { team } = data;
-
-          if (team.leader === login) {
-            router.push(`/`);
-            return false;
-          }
-
-          const alreadyJoin = await apiIsAlreadyJoin(team.id);
-          if (alreadyJoin.result === false) {
-            setGlobalToast("이미 가입되어 있습니다.", true);
-            router.push(`/`);
-            return false;
-          }
-
-          setTeamInfo(team);
-        }
-      },
+  });
+  useEffect(() => {
+    if (isSuccess && data) {
+      const { team } = data;
+      checkAvailableCode();
+      setTeamInfo(team);
     }
-  );
+  }, [isSuccess, data]);
 
-  const joinTeamMutation = useMutation(
-    ["joinTeam", teamInfo.id, login],
-    async () => await apiJoinTeam({ team_id: teamInfo.id, token }),
-    {
-      onSuccess(response) {
-        if (response.result === true) {
-          setGlobalToast("가입 되었습니다.");
-        }
-      },
+  const checkAvailableCode = async () => {
+    const now = moment();
+    const { team } = data;
+    if (now.isAfter(data.expire_time)) {
+      const isError = true;
+      setGlobalToast("만료된 초대코드 입니다.", isError);
+      router.push(`/`);
+      return false;
     }
-  );
+
+    if (team.leader === login) {
+      router.push(`/`);
+      return false;
+    }
+
+    const alreadyJoin = await apiIsAlreadyJoin(team.id);
+    if (alreadyJoin.result === false) {
+      setGlobalToast("이미 가입되어 있습니다.", true);
+      router.push(`/`);
+      return false;
+    }
+  };
+
+  const joinTeamMutation = useMutation({
+    mutationKey: ["joinTeam", teamInfo.id, login],
+    mutationFn: async () => await apiJoinTeam({ team_id: teamInfo.id, token }),
+
+    onSuccess(result) {
+      if (result) {
+        setGlobalToast("가입 되었습니다.");
+      }
+    },
+  });
   return (
     <div className="flex flex-col items-center gap-8">
       {data ? (

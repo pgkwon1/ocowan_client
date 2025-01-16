@@ -1,7 +1,7 @@
 import { apiCreateTeam } from "@/api/team/team";
 import { IRootReducer } from "@/store/reducer.dto";
 import { useState } from "react";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { setGlobalToast } from "../Toast";
 import { useRouter } from "next/router";
@@ -18,18 +18,16 @@ export default function TeamCreateForm() {
     logo: {} as File,
   });
 
-  const createMutate = useMutation(
-    "createTeam",
-    async () => await apiCreateTeam(teamData),
-    {
-      onSuccess(response) {
-        if (response.result === true) {
-          setGlobalToast("성공적으로 팀이 생성되었습니다.");
-          Router.push(`/team/${response.data.id}`);
-        }
-      },
-    }
-  );
+  const createMutate = useMutation({
+    mutationKey: ["createTeam"],
+    mutationFn: async () => await apiCreateTeam(teamData),
+    onSuccess(response) {
+      if (response.result === true) {
+        setGlobalToast("성공적으로 팀이 생성되었습니다.");
+        Router.push(`/team/${response.data.id}`);
+      }
+    },
+  });
 
   const setFormData = (attr: string, data: any) => {
     setTeamData((current) => ({ ...current, [attr]: data }));

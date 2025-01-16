@@ -4,7 +4,7 @@ import { IRootReducer } from "@/store/reducer.dto";
 import { GetServerSidePropsContext } from "next";
 import dynamic from "next/dynamic";
 import { useEffect, useMemo, useState } from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import Link from "next/link";
@@ -32,25 +32,26 @@ export default function TeamInfo({ id }: { id: string }) {
 
   const Chart = dynamic(() => import("react-apexcharts"));
 
-  const { data, isLoading } = useQuery(
-    ["getTeamInfo", id],
-    async () => await apiGetTeamInfo(id),
+  const { data, isLoading, isSuccess } = useQuery({
+    queryKey: ["getTeamInfo", id],
+    queryFn: async () => await apiGetTeamInfo(id),
+  });
 
-    {
-      async onSuccess(result) {
-        if (result) {
-          if (result.leader === login) {
-            setIsLeader(true);
-          }
-
-          setTeamMember(result.teamMember);
-          const response = await apiGetMemberBigThree(id);
-          setBigThree(response);
-        }
-      },
+  useEffect(() => {
+    if (isSuccess) {
+      getMemberBigThree();
     }
-  );
+  }, [data]);
 
+  const getMemberBigThree = async () => {
+    if (data.leader === login) {
+      setIsLeader(true);
+    }
+
+    setTeamMember(data.teamMember);
+    const response = await apiGetMemberBigThree(id);
+    setBigThree(response);
+  };
   useEffect(() => {
     bigThree.length > 0 && setChartData(handleMemberBigThree);
   }, [bigThree]);
@@ -223,7 +224,7 @@ const TeamMenu = ({ id }: { id: string }) => {
       >
         <MenuItem>
           <Link
-            href={`/team/${id}/edit`}
+            href={`/team/edit/${id}`}
             className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
           >
             수정
@@ -231,7 +232,7 @@ const TeamMenu = ({ id }: { id: string }) => {
         </MenuItem>
         <MenuItem>
           <Link
-            href={`/team/${id}/delete`}
+            href={`/team/delete/${id}`}
             className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
           >
             삭제

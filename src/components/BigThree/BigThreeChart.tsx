@@ -1,22 +1,17 @@
 import { apiGetBigThree, apiGetBigThreeWeekly } from "@/api/bigthree";
 import { IRootReducer } from "@/store/reducer.dto";
 import dynamic from "next/dynamic";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { setGlobalToast } from "../Toast";
 
 export default function BigThreeChart() {
   const { login } = useSelector((state: IRootReducer) => state.usersReducer);
 
-  const { data } = useQuery(
-    ["getBigThreeWeekly", login],
-    async () => await apiGetBigThreeWeekly(),
-    {
-      onSuccess(data) {
-        console.log(data);
-      },
-    }
-  );
+  const { data } = useQuery({
+    queryKey: ["getBigThreeWeekly", login],
+    queryFn: async () => await apiGetBigThreeWeekly(),
+  });
   const ReactApexChart = dynamic(() => import("react-apexcharts"));
   return (
     <>

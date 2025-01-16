@@ -1,6 +1,6 @@
 import { apiGetBigThree } from "@/api/bigthree";
 import { IRootReducer } from "@/store/reducer.dto";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { setGlobalToast } from "@/components/Toast";
 import CountUp from "react-countup";
@@ -8,16 +8,10 @@ import CountUp from "react-countup";
 export default function BigThreeBoard() {
   const { login } = useSelector((state: IRootReducer) => state.usersReducer);
 
-  const { data, isLoading } = useQuery(
-    ["getBigThree", login],
-    async () => await apiGetBigThree(),
-    {
-      onError(data) {
-        const isError = true;
-        setGlobalToast("3대 측정 데이터를 불러오는데 실패하였습니다.", isError);
-      },
-    }
-  );
+  const { data, isLoading } = useQuery({
+    queryKey: ["getBigThree", login],
+    queryFn: async () => await apiGetBigThree(),
+  });
 
   return (
     <>

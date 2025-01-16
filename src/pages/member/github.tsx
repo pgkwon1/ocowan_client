@@ -4,7 +4,7 @@ import axios from "axios";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Router from "next/router";
 import { useEffect } from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
 import Cookies from "js-cookie";
 import { IRootReducer } from "@/store/reducer.dto";
@@ -16,25 +16,23 @@ export default function Github() {
   const code = query.get("code");
   const { callback } = useSelector((state: IRootReducer) => state.usersReducer);
 
-  let loginMutation = useMutation(
-    "githubLogin",
-    async (code: string) => await apiLogin(code),
-    {
-      onSuccess: (result) => {
-        const { data, token } = result;
-        data.isLogin = true;
-        dispatch(setLoginData(data));
-        localStorage.setItem("token", token);
+  const loginMutation = useMutation({
+    mutationKey: ["githubLogin"],
+    mutationFn: async (code: string) => await apiLogin(code),
+    onSuccess: (result) => {
+      const { data, token } = result;
+      data.isLogin = true;
+      dispatch(setLoginData(data));
+      localStorage.setItem("token", token);
 
-        if (callback === "") {
-          router.push("/");
-        } else {
-          dispatch(setCallback(""));
-          router.push(callback);
-        }
-      },
-    }
-  );
+      if (callback === "") {
+        router.push("/");
+      } else {
+        dispatch(setCallback(""));
+        router.push(callback);
+      }
+    },
+  });
 
   useEffect(() => {
     if (code) {

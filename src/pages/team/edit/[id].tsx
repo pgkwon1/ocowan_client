@@ -1,7 +1,7 @@
 import { apiCreateTeam, apiEditTeam, apiGetTeamInfo } from "@/api/team/team";
 import { IRootReducer } from "@/store/reducer.dto";
-import { useState } from "react";
-import { useMutation, useQuery } from "react-query";
+import { useEffect, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { GetServerSidePropsContext } from "next";
@@ -18,37 +18,39 @@ export default function TeamEdit({ id }: { id: string }) {
     leader: "",
     description: "",
     logo: "" || ({} as File),
+    oldFileLogo: "",
   });
 
-  const editMutate = useMutation(
-    "editTeam",
-    async () => await apiEditTeam(teamData),
-    {
-      onSuccess(data) {
-        if (data.result) {
-          setGlobalToast("수정 완료되었습니다.");
-          router.push(`/team/${teamData.id}`);
-        }
-      },
-    }
-  );
+  const editMutate = useMutation({
+    mutationKey: ["editTeam"],
+    mutationFn: async () => await apiEditTeam(teamData),
 
-  const { data } = useQuery(
-    ["getTeamInfo", id],
-    async () => await apiGetTeamInfo(id),
-    {
-      onSuccess({ data }) {
-        const { id, name, leader, description, logo } = data;
-        setTeamData({
-          id,
-          name,
-          leader,
-          description,
-          logo,
-        });
-      },
+    onSuccess(data) {
+      if (data.result) {
+        setGlobalToast("수정 완료되었습니다.");
+        router.push(`/team/${teamData.id}`);
+      }
+    },
+  });
+
+  const { data, isSuccess } = useQuery({
+    queryKey: ["getTeamInfo", id],
+    queryFn: async () => await apiGetTeamInfo(id),
+  });
+
+  useEffect(() => {
+    if (isSuccess) {
+      const { id, name, leader, description, logo } = data;
+      setTeamData({
+        id,
+        name,
+        leader,
+        description,
+        logo,
+        oldFileLogo: logo as string,
+      });
     }
-  );
+  }, [isSuccess]);
 
   const setFormData = (attr: string, data: any) => {
     setTeamData((current) => ({ ...current, [attr]: data }));
@@ -60,7 +62,7 @@ export default function TeamEdit({ id }: { id: string }) {
         <div className="mb-5">
           <img
             className="h-32 w-32 rounded-full border-4 border-white dark:border-gray-800 mx-auto my-4"
-            src={avatar_url}
+            src={teamData.oldFileLogo}
             alt=""
           />
         </div>

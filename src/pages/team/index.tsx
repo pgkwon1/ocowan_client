@@ -2,7 +2,7 @@ import { apiGetTeamList } from "@/api/team/team";
 import { IRootReducer } from "@/store/reducer.dto";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import Pagination from "react-js-pagination";
 import Paginate from "@/components/Pagination";
@@ -15,26 +15,23 @@ export default function TeamIndex() {
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
 
-  const { data, isLoading, refetch } = useQuery(
-    ["getTeamList", login],
-    async () => await apiGetTeamList(page),
-    {
-      onSuccess(result) {
-        const { count, teamList } = result;
-
-        setTeamList(teamList);
-        setTotalCount(count);
-      },
-    }
-  );
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ["getTeamList", login],
+    queryFn: async () => await apiGetTeamList(page),
+  });
 
   const onPageChange = (page: number) => setPage(page);
 
   useEffect(() => {
+    if (data) {
+      const { count, teamList } = data;
+      setTeamList(teamList);
+      setTotalCount(count);
+    }
+  }, [data]);
+  useEffect(() => {
     refetch();
   }, [page]);
-
-  const itemPerPage: number = 10;
   return (
     <div className="flex flex-col items-center justify-center gap-6">
       <div className="text-2xl">팀 목록</div>
