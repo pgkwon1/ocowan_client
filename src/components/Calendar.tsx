@@ -37,7 +37,7 @@ export default function OcowanCalendar() {
   const currentDate = moment();
 
   const tileClassName = ({ date }: { date: Date }) => {
-    return data?.some(({ ocowan_date }) =>
+    return data?.some((ocowan_date: any) =>
       moment(ocowan_date).isSame(date, "day")
     )
       ? "ocowan"
