@@ -6,6 +6,7 @@ export interface IRootReducer {
 
 interface IUsersReducer {
   id: string;
+  users_id: string;
   login: string;
   avatar_url: string;
   bio: string;
