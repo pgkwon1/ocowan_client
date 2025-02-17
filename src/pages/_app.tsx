@@ -10,12 +10,19 @@ import {
   QueryCache,
   QueryClient,
   QueryClientProvider,
-} from "react-query";
+} from "@tanstack/react-query";
 import { Provider } from "react-redux";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
+import { scan } from "react-scan";
 
 export default function App({ Component, pageProps }: AppProps) {
+  if (typeof window !== "undefined") {
+    scan({
+      enabled: true,
+      log: true,
+    });
+  }
   const persistor = persistStore(store);
   const router = useRouter();
   const client = new QueryClient({
@@ -23,7 +30,6 @@ export default function App({ Component, pageProps }: AppProps) {
       queries: {
         retry: 0,
         staleTime: 120000,
-        cacheTime: 120000,
       },
       mutations: {
         retry: 0,
@@ -40,13 +46,15 @@ export default function App({ Component, pageProps }: AppProps) {
         ) {
           setGlobalToast("데이터를 불러오는데 실패하였습니다 .");
           router.push("/");
+          return false;
         } else {
           setGlobalToast("오류가 발생하였습니다.");
+          return false;
         }
       },
     }),
     mutationCache: new MutationCache({
-      onError(error) {
+      onError(error: any) {
         if (error instanceof AxiosError && error.response !== undefined) {
           const { status } = error.response;
           if (status === 401) {
@@ -61,6 +69,7 @@ export default function App({ Component, pageProps }: AppProps) {
       },
     }),
   });
+
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>
