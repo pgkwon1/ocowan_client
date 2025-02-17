@@ -9,7 +9,7 @@ export default function Document() {
           content="upC0HEZqSTbD6EzT_b6xTrxsr8zYxFM982wGvWiVlsw"
         />
       </Head>
-      <body className="min-h-screen bg-gradient-to-b from-blue-600 to-blue-400">
+      <body className="min-h-screen bg-[#F5F5F5]">
         <Main />
         <NextScript />
       </body>
