@@ -19,7 +19,7 @@ export default function Paginate({
         pageRangeDisplayed={5}
         onChange={onPageChange}
         itemClass="px-3 py-1"
-        linkClass="hover:bg-gray-200 text-gray-700"
+        linkClass="hover:bg-gray-200 text-white-700"
         activeClass="bg-blue-600 text-white"
         activeLinkClass="hover:bg-blue-600"
         disabledClass="opacity-50 cursor-not-allowed"

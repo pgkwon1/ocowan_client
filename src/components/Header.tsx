@@ -15,7 +15,7 @@ export default function Header() {
 
   return (
     <div className="min-h-40 flex flex-col">
-      <header className="py-4 px-8 flex justify-center items-center gap-8">
+      <header className="py-6 px-8 flex justify-center items-center gap-8 bg-gray-100 dark:bg-gray-800 shadow-md rounded-lg">
         <Link href="/">
           <span className="text-xl font-extrabold	py-2 box-decoration-slice bg-gradient-to-r from-indigo-600 to-pink-500 text-white px-2 ...">
             OCOWAN
@@ -26,15 +26,18 @@ export default function Header() {
             {/* PC에서 보이는 메뉴 */}
             <div className="hidden md:flex flex-row gap-8 items-center xs:text-base">
               <Link href="/bigthree/">
-                <button className="text-3xl text-white font-bold">
+                <button className="text-3xl text-black font-bold">
                   3대측정
                 </button>
               </Link>
               <Link href="/team/">
-                <button className="text-3xl text-white font-bold">팀</button>
+                <button className="text-3xl text-black font-bold">팀</button>
+              </Link>
+              <Link href="/til/">
+                <button className="text-3xl text-black font-bold">TIL</button>
               </Link>
               <Link href="/member/logout">
-                <button className="text-3xl text-white font-bold">
+                <button className="text-3xl text-black font-bold">
                   LOGOUT
                 </button>
               </Link>
@@ -72,6 +75,11 @@ export default function Header() {
                     <li className="py-2">
                       <Link href="/team" className="text-gray-800">
                         팀
+                      </Link>
+                    </li>
+                    <li className="py-2">
+                      <Link href="/til" className="text-gray-800">
+                        TIL
                       </Link>
                     </li>
                     <li className="py-2">
