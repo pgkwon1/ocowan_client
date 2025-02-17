@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
+  users_id: "",
   login: "",
   avatar_url: "",
   bio: "",
@@ -19,6 +20,7 @@ const usersReducer = createSlice({
   reducers: {
     setLoginData: (state, action) => {
       const {
+        users_id,
         login,
         avatar_url,
         bio,
@@ -28,6 +30,7 @@ const usersReducer = createSlice({
         isLogin,
         levels = { level: 0, exp: 1 },
       } = action.payload;
+      state.users_id = users_id;
       state.login = login;
       state.avatar_url = avatar_url;
       state.bio = bio;
