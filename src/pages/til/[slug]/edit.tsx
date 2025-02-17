@@ -1,33 +1,61 @@
-import { apiWriteTil } from "@/api/til/til";
-import { setGlobalToast } from "@/components/Toast";
-import { WRITE_TILCATEGORIES } from "@/constants/til.constants";
-import dynamic from "next/dynamic";
+import { apiEditTil, apiGetTil } from "@/api/til/til";
+import { GetServerSidePropsContext } from "next";
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
 import ReactQuill from "react-quill";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { TILCATEGORIES } from "@/constants/til.constants";
+import TilEditSkeleton from "@/components/Til/Skeleton/TilEdit";
+import dynamic from "next/dynamic";
+import { TilWriteAttributes } from "../write";
+import { setGlobalToast } from "@/components/Toast";
 
-export interface TilWriteAttributes {
-  title: string;
-  category: (typeof WRITE_TILCATEGORIES)[number];
-  contents: string;
-  slug?: string;
+interface TilEditAttributes extends TilWriteAttributes {
+  id: string;
 }
-
-export default function TilWrite() {
+export default function TilEdit({ slug }: { slug: string }) {
   const editorRef = useRef<ReactQuill>(null);
+  const [clicked, setClicked] = useState(false);
   const [tilData, setTilData] = useState({
+    id: "",
     title: "",
     contents: "",
-    category: "프로그래밍 언어" as (typeof WRITE_TILCATEGORIES)[number],
-    link: [] as string[],
+    category: "",
   });
 
   const router = useRouter();
 
   useEffect(() => {
-    if (tilData.contents !== "") writeMutation.mutateAsync();
+    if (tilData.contents !== "" && clicked === true) editMutation.mutateAsync();
+
+    setClicked(false);
   }, [tilData.contents]);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["getTil", slug],
+    queryFn: async () => await apiGetTil(slug),
+  });
+
+  useEffect(() => {
+    if (!isLoading && data) {
+      const { id, title, contents, category } = data;
+      setTilData({
+        id,
+        title,
+        contents,
+        category,
+      });
+    }
+  }, [data, isLoading]);
+
+  const editMutation = useMutation({
+    mutationKey: ["editTil", slug],
+    mutationFn: async () => await apiEditTil(tilData),
+    onSuccess(response) {
+      setClicked(false);
+      router.push(`/til/${response.title}-${slug}`);
+    },
+  });
 
   const handleData = (e: any, column: keyof TilWriteAttributes) => {
     setTilData((current) => {
@@ -38,17 +66,8 @@ export default function TilWrite() {
     });
   };
 
-  const handleWrite = async () => {
+  const handleEdit = async () => {
     const isError = true;
-    if (!tilData.title) {
-      setGlobalToast("제목을 입력해주세요.", isError);
-      return false;
-    }
-
-    if (!tilData.category) {
-      setGlobalToast("카테고리를 선택해주세요.", isError);
-      return false;
-    }
     const contents = editorRef.current?.getEditor().root.innerHTML;
 
     if (!contents) {
@@ -59,28 +78,22 @@ export default function TilWrite() {
       ...current,
       contents,
     }));
+    if (clicked === false) {
+      await editMutation.mutate();
+    }
+    setClicked(true);
   };
-  const writeMutation = useMutation({
-    mutationKey: ["writeTil"],
-    mutationFn: async () => await apiWriteTil(tilData),
-
-    onSuccess(response: string) {
-      const slug = response;
-      router.push(`/til/${tilData.title}-${slug}`);
-    },
-  });
 
   // react-quill 에디터 자체가 client단의 window 객체를 사용하는 걸로 보여
   // 동적 로딩 필수.
-  const Editor = dynamic(() => import("@/components/Til/Skeleton/Editor"), {
-    ssr: false,
-  });
+  const Editor = dynamic(() => import("@/components/Til/Skeleton/Editor"));
 
   // 재 렌더링 될 경우 자식 컴포넌트도 새로 렌더링이 되기 때문에
   // 내용이 초기화 되는 문제가 발생해 메모이제이션 필수
   const TilEditor = useMemo(() => React.memo(Editor), []);
-
-  return (
+  return isLoading ? (
+    <TilEditSkeleton />
+  ) : (
     <div className="flex flex-col gap-12">
       <div className="flex flex-col gap-8 relative w-full">
         <div>제목</div>
@@ -95,7 +108,7 @@ export default function TilWrite() {
       </div>
       <div>카테고리</div>
       <div className="flex flex-wrap gap-2 relative mb-6 w-full">
-        {WRITE_TILCATEGORIES.map((category, key) => (
+        {TILCATEGORIES.map((category, key) => (
           <button
             key={key}
             type="button"
@@ -111,14 +124,30 @@ export default function TilWrite() {
           </button>
         ))}
       </div>
-      <TilEditor editorRef={editorRef} />
+      <TilEditor contents={tilData.contents} editorRef={editorRef} />
 
       <button
-        className={`w-1/2 p-2 w-full border border-gray-300 rounded-md shadow-sm hover:bg-gray-100 transition bg-gradient-to-br from-purple-600 to-blue-500 text-white`}
-        onClick={handleWrite}
+        className={` ${
+          clicked ? `disabled` : ""
+        } w-1/2 p-2 w-full border border-gray-300 rounded-md shadow-sm hover:bg-gray-100 transition bg-gradient-to-br from-purple-600 to-blue-500 text-white`}
+        onClick={handleEdit}
       >
-        작성
+        {clicked ? "수정 중..." : "수정"}
       </button>
     </div>
   );
 }
+
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const { slug } = context.query;
+  let splitSlug;
+  console.log(slug);
+  splitSlug = typeof slug === "string" ? slug.split("-")[1] : slug;
+  return {
+    props: {
+      slug: splitSlug,
+    },
+  };
+};

@@ -10,7 +10,9 @@ export const TILCATEGORIES = [
   "모바일 개발",
   "보안",
   "기타",
-];
+] as const;
+
+export const WRITE_TILCATEGORIES = TILCATEGORIES.slice(1);
 
 export enum TIL_EMOJIS {
   thumbsUp = "thumbsUp",
@@ -19,3 +21,5 @@ export enum TIL_EMOJIS {
   fire = "fire",
   idea = "idea",
 }
+
+export const displayEmoji = ["👍", "❤️", "😊", "🔥", "💡"];

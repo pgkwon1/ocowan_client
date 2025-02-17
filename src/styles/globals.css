@@ -3,18 +3,28 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: "SBAggroM";
-  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroM.woff")
+  font-family: "Pretendard-Regular";
+  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff")
     format("woff");
-  font-weight: light;
+  font-weight: 800;
   font-style: normal;
 }
+pre.ql-syntax {
+  white-space: pre-wrap;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  padding: 5px 10px;
+
+  background-color: #23241f;
+  color: #f8f8f2;
+  overflow: visible;
+}
 body {
-  font-family: "SBAggroM", monospace;
+  font-family: Pretendard, Roboto, "sans-serif";
 }
 
 * {
-  font-weight: 300;
+  font-weight: 600;
 }
 
 .react-calendar__navigation__arrow {
