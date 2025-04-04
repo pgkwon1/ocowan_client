@@ -9,6 +9,7 @@ import { apiIncrementExp } from "@/api/member/levels";
 import { EXPINFO } from "@/constants/levels.constants";
 
 export default function Ocowan() {
+  let total_count = 0;
   const { login } = useSelector((state: IRootReducer) => state.usersReducer);
   const { ocowan } = useSelector((state: IRootReducer) => state.ocowanReducer);
   const dispatch = useDispatch();
@@ -17,6 +18,7 @@ export default function Ocowan() {
     mutationFn: async () => await apiCheck(login),
     async onSuccess(result) {
       if (result && typeof result === "object") {
+        total_count = result.total_count;
         return await ocowanMutate.mutate(result.total_count);
       }
       const isError = true;
@@ -26,18 +28,17 @@ export default function Ocowan() {
 
   const ocowanMutate = useMutation({
     mutationKey: ["ocowan", login],
-    mutationFn: async (total_count: number) =>
-      await apiOcowan(login, total_count),
+    mutationFn: async () => await apiOcowan(login, total_count),
 
-    onSuccess({ data, total_count }: { data: any; total_count: number }) {
+    async onSuccess(data) {
       if (data) {
-        dispatch(setOcowan({ ocowan: true, total_count: total_count }));
+        dispatch(setOcowan({ ocowan: true, total_count }));
 
-        incrementExpMutate.mutate();
+        await incrementExpMutate.mutate();
         setGlobalToast("오코완 완료!");
       } else {
-        dispatch(setOcowan({ ocowan: true, total_count: total_count }));
-        setGlobalToast("이미 오코완 되었습니다.");
+        dispatch(setOcowan({ ocowan: true, total_count }));
+        setGlobalToast("이미 오코완 되었습니다.", true);
       }
     },
   });
@@ -46,8 +47,8 @@ export default function Ocowan() {
     mutationKey: ["increment", login],
     mutationFn: async () => await apiIncrementExp(EXPINFO.OCOWAN_EXP),
 
-    onSuccess({ data: levelData }) {
-      const { level, exp } = levelData;
+    onSuccess(data) {
+      const { level, exp } = data;
       dispatch(
         setLevelsData({
           level,
