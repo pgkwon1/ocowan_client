@@ -20,6 +20,16 @@ const nextConfig = {
     ],
   },
 
+  async redirects() {
+    return [
+      {
+        source: "/member/profile/:login((?!@).+)", // @가 없는 경우만 매칭
+        destination: "/member/profile/@:login", // @ 추가하여 리다이렉트
+        permanent: true,
+      },
+    ];
+  },
+
   async rewrites() {
     return [
       {

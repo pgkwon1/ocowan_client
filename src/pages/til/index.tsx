@@ -12,7 +12,7 @@ import { useRouter } from "next/router";
 import Paginate from "@/components/Pagination";
 import { UserProfile } from "@/components/Profile";
 
-interface TilAttribute {
+export interface TilAttribute {
   category: string;
   commentsCnt: number;
   createdAt: Date;

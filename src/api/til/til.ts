@@ -5,13 +5,17 @@ export const apiGetListTil = async ({
   category,
   page,
   order,
+  users_id,
 }: {
   category: string;
   page: number;
   order: string;
+  users_id?: string;
 }) => {
   const { data } = await api.get(
-    `/tils/page/${page}?category=${category}&order=${order}`
+    `/tils/page/${page}?category=${category}&order=${order}${
+      users_id ? `&users_id=${users_id}` : ""
+    }`
   );
   return data;
 };

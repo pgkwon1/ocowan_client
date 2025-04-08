@@ -22,9 +22,14 @@ export const apiOcowan = async (id: string, total_count: number) => {
   return data;
 };
 
-export const apiGetOcowan = async (login: string) => {
+export const apiGetOcowan = async (
+  login: string,
+  extractDate: boolean = true
+) => {
   const { data } = await api.get(`/ocowan/${login}`);
   return data.length > 0
-    ? data.map((ocowan: IOcowan) => ocowan.ocowan_date)
+    ? extractDate
+      ? data.map((ocowan: IOcowan) => ocowan.ocowan_date)
+      : data
     : [];
 };

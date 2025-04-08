@@ -14,3 +14,8 @@ export const apiLogin = async (code: string) => {
   );
   return data;
 };
+
+export const apiGetUser = async (login: string) => {
+  const { data } = await api.get(`/users/${login}`);
+  return data;
+};

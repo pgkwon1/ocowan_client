@@ -1,8 +1,11 @@
 import { api } from "@/modules/ApiInstance";
 
-export const apiGetBigThree = async () => {
-  const { data } = await api.get(`/bigthrees`);
-  const { pullReqCount, issueCount, commitCount } = data;
+export const apiGetBigThree = async (login: string = "") => {
+  const { data } = await api.get(
+    `/bigthrees${login.length > 0 ? `/${login}` : ""}`
+  );
+  const { pullReqCount, issueCount, commitCount }: Record<string, number> =
+    data;
 
   return {
     pullReqCount,

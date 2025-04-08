@@ -2,6 +2,12 @@ import { IRootReducer } from "@/store/reducer.dto";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 
+export interface UserProfile {
+  login: string;
+  avatar_url: string;
+  followers: number;
+  bio: string;
+}
 export default function Profile() {
   const { login, avatar_url, bio, followers, isLogin } = useSelector(
     (state: IRootReducer) => state.usersReducer
