@@ -14,17 +14,17 @@ export const apiGetBigThree = async (login: string = "") => {
   };
 };
 
-export const apiGetBigThreeWeekly = async () => {
-  const { data } = await api.get(`/bigthrees/weekly`);
-  const weeklyData = data.map(
+export const apiGetBigThreeLatest = async () => {
+  const { data } = await api.get(`/bigthrees/latest`);
+  const latestData = data.map(
     (day: any, index: number) =>
       day.pullReqCount + day.issueCount + day.commitCount
   );
-  const weeklyDate = data.map((day: any, index: number) => day.createdAt);
+  const latestDate = data.map((day: any, index: number) => day.createdAt);
   return {
     data: {
-      weeklyData,
-      weeklyDate,
+      latestData,
+      latestDate,
     },
     result: data.result,
     message: data.message,
