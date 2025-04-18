@@ -53,7 +53,6 @@ export default function TilList({
       if (!["createdAt", "commentsCnt", "viewCnt"].includes(filterData.order)) {
         filterData.order = "createdAt";
       }
-      console.log(selectedCategory);
 
       if (!TILCATEGORIES.some((category) => category === selectedCategory)) {
         filterData.category = "전체";
@@ -254,7 +253,7 @@ export default function TilList({
       <div className="flex justify-center flex-row mt-6">
         <Paginate
           onPageChange={onPageChange}
-          totalCount={data.totalCount}
+          totalCount={data?.totalCount}
           page={page}
         />
       </div>
