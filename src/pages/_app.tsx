@@ -48,7 +48,7 @@ export default function App({ Component, pageProps }: AppProps) {
           router.push("/");
           return false;
         } else {
-          setGlobalToast("오류가 발생하였습니다.");
+          setGlobalToast("오류가 발생하였습니다.", true);
           return false;
         }
       },
