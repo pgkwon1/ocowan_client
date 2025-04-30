@@ -1,6 +1,30 @@
 /** @type {import('next').NextConfig} */
+const securityHeaders = [
+  {
+    key: "Strict-Transport-Security",
+    value: "max-age=63072000; includeSubDomains; preload",
+  },
+  {
+    key: "Referrer-Policy",
+    value: "same-origin",
+  },
+  {
+    key: "X-Content-Type-Options",
+    value: "nosniff",
+  },
+  {
+    key: "X-Frame-Options",
+    value: "DENY",
+  },
+  {
+    key: "X-XSS-Protection",
+    value: "1; mode=block",
+  },
+];
+
 const nextConfig = {
   reactStrictMode: false,
+
   images: {
     remotePatterns: [
       {
@@ -18,6 +42,14 @@ const nextConfig = {
         hostname: "ocowanstorage.blob.core.windows.net",
       },
     ],
+  },
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: securityHeaders,
+      },
+    ];
   },
 
   async redirects() {
