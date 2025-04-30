@@ -15,6 +15,7 @@ import { Provider } from "react-redux";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 import { scan } from "react-scan";
+import AdSense from "@/components/AdSense";
 
 export default function App({ Component, pageProps }: AppProps) {
   if (typeof window !== "undefined") {
@@ -75,6 +76,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <PersistGate persistor={persistor}>
         <QueryClientProvider client={client}>
           <Layout isLayoutDisplay={pageProps.isLayoutDisplay}>
+            <AdSense></AdSense>
             <Toast>
               <Component {...pageProps} />
             </Toast>
