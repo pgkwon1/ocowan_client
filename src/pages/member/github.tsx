@@ -1,8 +1,6 @@
 import { apiLogin } from "@/api/member/users";
 import { setCallback, setLoginData } from "@/store/reducers/users.reducer";
-import axios from "axios";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
-import Router from "next/router";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,7 +21,10 @@ export default function Github() {
       const { data, token } = result;
       data.isLogin = true;
       dispatch(setLoginData(data));
-      localStorage.setItem("token", token);
+      Cookies.set("token", token, {
+        secure: true,
+        sameSite: "strict",
+      });
 
       if (callback === "") {
         router.push("/");
