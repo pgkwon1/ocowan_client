@@ -2,7 +2,10 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import Cookies from "js-cookie";
 
 export const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL:
+    typeof window === "undefined"
+      ? process.env.NEXT_PUBLIC_API_SERVER_URL
+      : process.env.NEXT_PUBLIC_API_URL,
   validateStatus: (status) => {
     if (status >= 400 && status <= 599) {
       Promise.reject(status);
@@ -14,14 +17,16 @@ export const api = axios.create({
 
 api.interceptors.request.use((request) => {
   if (request.url !== "/github/login") {
-    const token = localStorage.getItem("token");
+    const token = Cookies.get("token");
     request.headers.Authorization = `Bearer ${token}`;
   }
   return request;
 });
+
 api.interceptors.response.use((response: AxiosResponse) => {
   return response.data;
 });
+
 export const formDataApi = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   headers: {
@@ -38,7 +43,7 @@ export const formDataApi = axios.create({
 
 formDataApi.interceptors.request.use((request) => {
   if (request.url !== "/github/login") {
-    const token = localStorage.getItem("token");
+    const token = Cookies.get("token");
     request.headers.Authorization = `Bearer ${token}`;
   }
   return request;
