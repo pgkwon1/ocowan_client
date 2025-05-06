@@ -79,39 +79,7 @@ export default function TilView({
   const { data, isLoading, isSuccess } = useQuery<TilViewAttribute>({
     queryKey: ["getTil", slug],
     queryFn: async () => await apiGetTil(slug),
-    select(data) {
-      return data;
-    },
   });
-
-  const emojiCountData = useMemo(() => {
-    if (data && isSuccess) {
-      const selectedEmojis =
-        data.emotify.map((selectedEmoji) => selectedEmoji.type) ?? [];
-      return {
-        thumbsUp: {
-          count: data.thumbsUpCnt ?? 0,
-          clicked: selectedEmojis.includes("thumbsUp"),
-        },
-        heart: {
-          count: data.heartCnt ?? 0,
-          clicked: selectedEmojis.includes("heart"),
-        },
-        smile: {
-          count: data.smileCnt ?? 0,
-          clicked: selectedEmojis.includes("smile"),
-        },
-        fire: {
-          count: data.fireCnt ?? 0,
-          clicked: selectedEmojis.includes("fire"),
-        },
-        idea: {
-          count: data.ideaCnt ?? 0,
-          clicked: selectedEmojis.includes("idea"),
-        },
-      };
-    }
-  }, [data]);
 
   const EmojiComponent = useMemo(() => Emoji, []);
 
@@ -232,8 +200,17 @@ export default function TilView({
         />
       </div>
 
-      {emojiCountData ? (
-        <EmojiComponent id={data.id} emojiCountData={emojiCountData} />
+      {!isLoading ? (
+        <EmojiComponent
+          id={data.id}
+          emojiCountData={{
+            thumbsUp: data.thumbsUpCnt,
+            heart: data.heartCnt,
+            smile: data.smileCnt,
+            fire: data.fireCnt,
+            idea: data.ideaCnt,
+          }}
+        />
       ) : (
         ""
       )}

@@ -1,23 +1,26 @@
 import { api } from "@/modules/ApiInstance";
 
+export const apiGetEmotify = async (til_id: string) => {
+  const { data } = await api.get(`/emotify/${til_id}`);
+  return data;
+};
+
 export const apiEmotify = async (emoji: string, til_id: string) => {
-  console.log("emoji", emoji);
-  const response = await api.post(`/emotify`, {
+  const { data } = await api.post(`/emotify`, {
     type: emoji,
     til_id,
   });
-  response.data.emoji = emoji;
-  console.log("Res", response.data);
-  return response.data;
+  data.emoji = emoji;
+  return data;
 };
 
 export const apiEmotifyCancel = async (tilId: string, emoji: string) => {
-  const response = await api.delete(`/emotify/delete`, {
+  const { data } = await api.delete(`/emotify/delete`, {
     data: {
       til_id: tilId,
       type: emoji,
     },
   });
-  console.log(response.data);
-  return response.data;
+
+  return data;
 };

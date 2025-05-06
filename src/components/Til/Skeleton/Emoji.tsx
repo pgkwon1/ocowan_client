@@ -1,64 +1,66 @@
-import { apiEmotify, apiEmotifyCancel } from "@/api/til/emotify";
+import { apiEmotify, apiEmotifyCancel, apiGetEmotify } from "@/api/til/emotify";
 import { displayEmoji, TIL_EMOJIS } from "@/constants/til.constants";
-import React from "react";
+import React, { use } from "react";
 import { useEffect, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useSelector } from "react-redux";
+import { IRootReducer } from "@/store/reducer.dto";
 
-interface EmojiProps {
+interface EmojiComponentProps {
   id: string;
-  emojiCountData: Record<TIL_EMOJIS, EmojiCountData>;
+  emojiCountData: Record<string, number>;
 }
-interface EmojiCountData {
-  count: number;
-  clicked: boolean;
-}
-
-const Emoji = React.memo(({ id, emojiCountData }: EmojiProps) => {
-  const [clickedEmoji, setClickedEmoji] = useState<
-    Record<string, EmojiCountData>
-  >({
-    thumbsUp: {
-      clicked: false,
-      count: 0,
-    },
-
-    heart: {
-      clicked: false,
-      count: 0,
-    },
-    smile: {
-      clicked: false,
-      count: 0,
-    },
-    fire: {
-      clicked: false,
-      count: 0,
-    },
-    idea: {
-      clicked: false,
-      count: 0,
-    },
-  });
-  const [totalCount, setTotalCount] = useState(0);
-  const [emojiEnable, setEmojiEnable] = useState(true);
+type EmojiCountData = Record<string, number> & { totalCount: number };
+const Emoji = React.memo(({ id, emojiCountData }: EmojiComponentProps) => {
+  const { isLogin } = useSelector((state: IRootReducer) => state.usersReducer);
+  const [clickedEmoji, setClickedEmoji] = useState<string[]>([]);
+  const [countData, setCountData] = useState<EmojiCountData>({
+    thumbsUp: 0,
+    heart: 0,
+    smile: 0,
+    fire: 0,
+    idea: 0,
+    totalCount: 0,
+  } as const);
+  const [emojiEnable, setEmojiEnable] = useState(isLogin ? true : false);
   const [isEmojiMenuVisible, setEmojiMenuVisible] = useState(false);
+
+  const { data: userEmojiData, isLoading: emojiLoading } = useQuery({
+    queryFn: async () => await apiGetEmotify(id),
+    queryKey: ["getEmojiByUser", id],
+  });
+
+  useEffect(() => {
+    if (userEmojiData) {
+      setClickedEmoji((current) =>
+        userEmojiData.map((emoji: { type: string }) => emoji.type)
+      );
+      const { thumbsUp, heart, smile, fire, idea } = emojiCountData;
+      setCountData({
+        thumbsUp,
+        heart,
+        smile,
+        fire,
+        idea,
+        totalCount: thumbsUp + heart + smile + fire + idea,
+      });
+    }
+  }, [emojiLoading]);
 
   const emotifyMutate = useMutation({
     mutationKey: ["emoify", id],
     mutationFn: async (emoji: string) => await apiEmotify(emoji, id),
 
-    onSuccess(response: { type: string; count: number }) {
-      const { type, count } = response;
+    onSuccess(response) {
+      const { emoji } = response;
+      const newEmojiClick = [...new Set(clickedEmoji).add(emoji)];
+      setClickedEmoji(newEmojiClick);
 
-      setClickedEmoji((current) => ({
+      setCountData((current) => ({
         ...current,
-        [type]: {
-          clicked: true,
-          count,
-        },
+        [emoji]: current[emoji] + 1,
+        totalCount: current.totalCount + 1,
       }));
-
-      setTotalCount((totalCount) => totalCount + 1);
       setEmojiEnable(true);
     },
   });
@@ -67,16 +69,15 @@ const Emoji = React.memo(({ id, emojiCountData }: EmojiProps) => {
     mutationKey: ["emotifyCancel", id],
     mutationFn: async (emoji: string) => await apiEmotifyCancel(id, emoji),
 
-    onSuccess(response: string) {
+    onSuccess(response) {
       const emoji = response;
-      setClickedEmoji((current) => ({
+      setClickedEmoji((current) => current.filter((val) => val !== emoji));
+      setCountData((current) => ({
         ...current,
-        [emoji]: {
-          clicked: false,
-          count: current[emoji].count - 1,
-        },
+        [emoji]: current[emoji] - 1,
+        totalCount: current.totalCount - 1,
       }));
-      setTotalCount((totalCount) => totalCount - 1);
+
       setEmojiEnable(true);
     },
   });
@@ -90,18 +91,6 @@ const Emoji = React.memo(({ id, emojiCountData }: EmojiProps) => {
     await emotifyCancelMutate.mutate(emoji);
   };
 
-  useEffect(() => {
-    if (emojiCountData) {
-      setClickedEmoji(emojiCountData);
-    }
-
-    let totalCount = 0;
-    Object.values(emojiCountData).map(({ count }) => {
-      totalCount += count;
-    });
-    setTotalCount(totalCount);
-  }, [emojiCountData]);
-
   return (
     <div
       className="relative flex items-center space-x-6 border-t pt-4 mb-8"
@@ -112,7 +101,7 @@ const Emoji = React.memo(({ id, emojiCountData }: EmojiProps) => {
       <div className="flex items-center gap-2 space-x-1 hover:text-gray-800 cursor-pointer text-xl">
         <span>😊</span>
 
-        <span>{totalCount}</span>
+        <span>{countData.totalCount}</span>
       </div>
 
       {/* Emoji Menu */}
@@ -121,40 +110,50 @@ const Emoji = React.memo(({ id, emojiCountData }: EmojiProps) => {
           isEmojiMenuVisible ? "max-w-[300px]" : "max-w-0"
         }`}
       >
-        {Object.entries(clickedEmoji).map(
-          ([emoji, { count, clicked }], key) => {
+        {["thumbsUp", "heart", "smile", "fire", "idea"].map(
+          (emojiType: string, key) => {
             return (
               <button
                 key={key}
                 className={`flex flex-row items-center justify-items-center gap-2 relative text-2xl p-2 transition-transform disabled:cursor-not-allowed disabled:opacity-50 ${
-                  clicked ? "scale-125 font-bold" : "hover:scale-110"
+                  clickedEmoji.includes(emojiType)
+                    ? "scale-125 font-bold"
+                    : "hover:scale-110"
                 }`}
                 onClick={() =>
-                  clicked ? handleEmotifyCancel(emoji) : handleEmotify(emoji)
+                  isLogin
+                    ? clickedEmoji.includes(emojiType)
+                      ? handleEmotifyCancel(emojiType)
+                      : handleEmotify(emojiType)
+                    : null
                 }
                 disabled={emojiEnable ? false : true}
               >
-                <span className={`text-${clicked ? "2xl" : "xl"}`}>
+                <span
+                  className={`text-${
+                    clickedEmoji.includes(emojiType) ? "2xl" : "xl"
+                  }`}
+                >
                   {displayEmoji[key]}
                 </span>
                 <span
                   className={`text-sm font-bold ${
-                    clicked
-                      ? emoji === "thumbsUp"
+                    clickedEmoji.includes(emojiType)
+                      ? emojiType === "thumbsUp"
                         ? "text-blue-500"
-                        : emoji === "heart"
+                        : emojiType === "heart"
                         ? "text-red-500"
-                        : emoji === "smile"
+                        : emojiType === "smile"
                         ? "text-green-500"
-                        : emoji === "fire"
+                        : emojiType === "fire"
                         ? "text-orange-500"
-                        : emoji === "idea"
+                        : emojiType === "idea"
                         ? "text-yellow-500"
                         : ""
                       : ""
                   }`}
                 >
-                  {count}
+                  {countData[emojiType]}
                 </span>
               </button>
             );
