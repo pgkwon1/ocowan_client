@@ -19,10 +19,16 @@ const persistConfig = {
   whiteList: ["usersReducer", "ocowanReducer", "bigthreeReducer"],
 };
 
-const rootPersistReducer = persistReducer(persistConfig, rootReducer);
-export const store = configureStore({
-  reducer: rootPersistReducer,
+export const serverStore = configureStore({
+  reducer: rootReducer,
   devTools: true,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false }),
+});
+export const clientStore = configureStore({
+  reducer: persistReducer(persistConfig, rootReducer),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 });
