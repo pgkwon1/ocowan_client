@@ -16,7 +16,7 @@ const persistConfig = {
       ? process.env.NEXT_PUBLIC_PERSIST_KEY
       : "",
   storage: storage,
-  whiteList: ["usersReducer", "ocowanReducer", "bigthreeReducer"],
+  whitelist: ["usersReducer", "ocowanReducer", "bigthreeReducer"],
 };
 
 export const serverStore = configureStore({
