@@ -4,6 +4,34 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 
 export default function Header() {
+  const afterLoginMenu = [
+    {
+      name: "3대측정",
+      href: "/bigthree/",
+    },
+    {
+      name: "팀",
+      href: "/team/",
+    },
+    {
+      name: "TIL",
+      href: "/til/",
+    },
+    {
+      name: "로그아웃",
+      href: "/member/logout",
+    },
+  ];
+  const beforeLoginMenu = [
+    {
+      name: "로그인",
+      href: "/",
+    },
+    {
+      name: "TIL",
+      href: "/til/",
+    },
+  ];
   const { isLogin, login } = useSelector(
     (state: IRootReducer) => state.usersReducer
   );
@@ -21,80 +49,66 @@ export default function Header() {
             OCOWAN
           </span>
         </Link>
-        {isLogin && login ? (
-          <>
-            {/* PC에서 보이는 메뉴 */}
-            <div className="hidden md:flex flex-row gap-8 items-center xs:text-base">
-              <Link href="/bigthree/">
-                <button className="text-3xl text-black font-bold">
-                  3대측정
-                </button>
-              </Link>
-              <Link href="/team/">
-                <button className="text-3xl text-black font-bold">팀</button>
-              </Link>
-              <Link href="/til/">
-                <button className="text-3xl text-black font-bold">TIL</button>
-              </Link>
-              <Link href="/member/logout">
-                <button className="text-3xl text-black font-bold">
-                  LOGOUT
-                </button>
-              </Link>
-            </div>
 
-            {/* 모바일에서 보이는 햄버거 메뉴 */}
-            <div className="relative md:hidden">
-              <button
-                className="block p-2 focus:outline-none"
-                onClick={toggleMenu}
-              >
-                <svg
-                  className="w-6 h-6 text-gray-800"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  ></path>
-                </svg>
-              </button>
-              {isOpen && (
-                <div className="absolute top-12 right-0 w-48 bg-white rounded-lg shadow-lg p-4 z-50">
-                  <ul>
-                    <li className="py-2">
-                      <Link href="/bigthree" className="text-gray-800">
-                        3대측정
-                      </Link>
-                    </li>
-                    <li className="py-2">
-                      <Link href="/team" className="text-gray-800">
-                        팀
-                      </Link>
-                    </li>
-                    <li className="py-2">
-                      <Link href="/til" className="text-gray-800">
-                        TIL
-                      </Link>
-                    </li>
-                    <li className="py-2">
-                      <Link href="/member/logout" className="text-gray-800">
-                        로그아웃
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-              )}
+        {/* PC에서 보이는 메뉴 */}
+        <div className="hidden md:flex flex-row gap-8 items-center xs:text-base">
+          {isLogin && login
+            ? afterLoginMenu.map((menu, key) => (
+                <Link href={menu.href} key={key}>
+                  <button className="text-3xl text-black font-bold">
+                    {menu.name}
+                  </button>
+                </Link>
+              ))
+            : beforeLoginMenu.map((menu, key) => (
+                <Link href={menu.href} key={key}>
+                  <button className="text-3xl text-black font-bold">
+                    {menu.name}
+                  </button>
+                </Link>
+              ))}
+        </div>
+
+        {/* 모바일에서 보이는 햄버거 메뉴 */}
+        <div className="relative md:hidden">
+          <button className="block p-2 focus:outline-none" onClick={toggleMenu}>
+            <svg
+              className="w-6 h-6 text-gray-800"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              ></path>
+            </svg>
+          </button>
+          {isOpen && (
+            <div className="absolute top-12 right-0 w-48 bg-white rounded-lg shadow-lg p-4 z-50">
+              <ul>
+                {isLogin && login
+                  ? afterLoginMenu.map((menu, key) => (
+                      <li className="py-2" key={key}>
+                        <Link href={menu.href} className="text-gray-800">
+                          {menu.name}
+                        </Link>
+                      </li>
+                    ))
+                  : beforeLoginMenu.map((menu, key) => (
+                      <li className="py-2" key={key}>
+                        <Link href={menu.href} className="text-gray-800">
+                          {menu.name}
+                        </Link>
+                      </li>
+                    ))}
+              </ul>
             </div>
-          </>
-        ) : (
-          ""
-        )}
+          )}
+        </div>
       </header>
     </div>
   );
