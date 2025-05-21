@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import "highlight.js/styles/atom-one-dark.css"; // 원하는 스타일로 변경 가능
 import { TILCATEGORIES } from "@/constants/til.constants";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import {
+  dehydrate,
+  keepPreviousData,
+  QueryClient,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import moment from "moment";
 import "moment/locale/ko";
 
@@ -43,22 +49,14 @@ export default function TilList({
   const [selectedCategory, setSelectedCategory] = useState(currentCategory);
   const router = useRouter();
   const { data, isSuccess, isLoading, refetch } = useQuery({
-    queryKey: ["getListTil", selectedCategory, page, selectedOrder],
-    queryFn: async () => {
-      const filterData = {
-        order: selectedOrder,
-        category: selectedCategory,
-        page,
-      };
-      if (!["createdAt", "commentsCnt", "viewCnt"].includes(filterData.order)) {
-        filterData.order = "createdAt";
-      }
+    queryFn: async () =>
+      await apiGetListTil({
+        page: currentPage,
+        category: currentCategory,
+        order: currentOrder,
+      }),
+    queryKey: ["getListTil", currentCategory, currentPage, currentOrder],
 
-      if (!TILCATEGORIES.some((category) => category === selectedCategory)) {
-        filterData.category = "전체";
-      }
-      return await apiGetListTil(filterData);
-    },
     placeholderData: keepPreviousData,
   });
   const onPageChange = (page: number) => {
@@ -73,7 +71,6 @@ export default function TilList({
     setPage(1);
     setSelectedCategory(category);
   };
-
   const handleOrder = (
     selectedOrder: "createdAt" | "viewCnt" | "commentsCnt"
   ) => {
@@ -260,16 +257,34 @@ export default function TilList({
     </div>
   );
 }
-
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
-  const { category, page, order } = context.query;
-  return {
-    props: {
-      currentCategory: category ?? "전체",
-      currentPage: page ?? 1,
-      currentOrder: order ?? "createdAt",
-    },
-  };
+  try {
+    const { category, page, order } = context.query;
+    const queryClient = new QueryClient();
+    const currentCategory = String(category ?? "전체");
+    const currentPage = Number(page ?? 1);
+    const currentOrder = String(order ?? "createdAt");
+
+    await queryClient.prefetchQuery({
+      queryFn: async () =>
+        await apiGetListTil({
+          page: currentPage,
+          category: currentCategory,
+          order: currentOrder,
+        }),
+      queryKey: ["getListTil", currentCategory, currentPage, currentOrder],
+    });
+    return {
+      props: {
+        currentCategory,
+        currentPage,
+        currentOrder,
+        dehydratedProps: dehydrate(queryClient),
+      },
+    };
+  } catch (e) {
+    console.log("err", e);
+  }
 };
