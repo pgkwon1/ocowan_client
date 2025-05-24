@@ -4,10 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { setGlobalToast } from "../Toast";
-import { setBigThree } from "@/store/reducers/bigthree.reducer";
-import { apiIncrementExp } from "@/api/member/levels";
 import { EXPINFO } from "@/constants/levels.constants";
-import { setLevelsData } from "@/store/reducers/users.reducer";
+import useIncrementExp from "@/hooks/increaseExp";
 
 interface BigThreeResponse {
   commitCount: number;
@@ -27,68 +25,46 @@ export default function BigThree() {
     (currentIssueCount ?? 0) +
     (currentPullReqCount ?? 0);
 
-  const dispatch = useDispatch();
-  const { data, refetch, isSuccess } = useQuery<BigThreeResponse>({
+  const increaseExp = useIncrementExp();
+  const { data } = useQuery<BigThreeResponse>({
     queryKey: ["getBigThree", login],
     queryFn: async () => await apiGetBigThree(),
   });
 
-  useEffect(() => {
-    if (isSuccess) {
-      calculateExp();
-    }
-  }, [isSuccess, data]);
-  const calculateExp = useCallback(async () => {
-    if (data) {
-      const { pullReqCount, issueCount, commitCount } = data;
-      const updateBigThree: number =
-        (commitCount ?? 0) + (issueCount ?? 0) + (pullReqCount ?? 0);
+  const calculateExp = useCallback(
+    async (bigthreeData: BigThreeResponse) => {
+      if (bigthreeData) {
+        const { pullReqCount, issueCount, commitCount } = bigthreeData;
+        const updateBigThree: number =
+          (commitCount ?? 0) + (issueCount ?? 0) + (pullReqCount ?? 0);
+        // 세 항목 각각 다 경험치 계산하여 경험치 증가.
+        if (updateBigThree > currentBigThree) {
+          const pullReqExp =
+            pullReqCount > currentPullReqCount
+              ? (pullReqCount - currentPullReqCount) * EXPINFO.PR_EXP
+              : 0;
+          const issueExp =
+            issueCount > currentIssueCount
+              ? (issueCount - currentIssueCount) * EXPINFO.ISSUE_EXP
+              : 0;
+          const commitExp =
+            commitCount > currentCommitCount
+              ? (commitCount - currentCommitCount) * EXPINFO.COMMIT_EXP
+              : 0;
 
-      // 세 항목 각각 다 경험치 계산하여 경험치 증가.
-      if (updateBigThree > currentBigThree) {
-        const pullReqExp =
-          pullReqCount > currentPullReqCount
-            ? (pullReqCount - currentPullReqCount) * EXPINFO.PR_EXP
-            : 0;
-        const issueExp =
-          issueCount > currentIssueCount
-            ? (issueCount - currentIssueCount) * EXPINFO.ISSUE_EXP
-            : 0;
-        const commitExp =
-          commitCount > currentCommitCount
-            ? (commitCount - currentCommitCount) * EXPINFO.COMMIT_EXP
-            : 0;
-
-        const totalExp = pullReqExp + issueExp + commitExp;
-
-        if (totalExp > 0) {
-          await incrementExpMutate.mutate(totalExp);
+          const totalExp = pullReqExp + issueExp + commitExp;
+          if (totalExp > 0) {
+            handleIncrementExp(totalExp);
+          }
         }
       }
-
-      dispatch(
-        setBigThree({
-          pullReqCount,
-          issueCount,
-          commitCount,
-        })
-      );
-    }
-  }, [data]);
-
-  const incrementExpMutate = useMutation({
-    mutationKey: ["increment", login],
-    mutationFn: async (exp: number) => await apiIncrementExp(exp),
-    onSuccess({ data }) {
-      const { exp, level } = data;
-      dispatch(
-        setLevelsData({
-          exp,
-          level,
-        })
-      );
     },
-  });
+    [data]
+  );
+
+  const handleIncrementExp = (exp: number) => {
+    increaseExp(exp);
+  };
 
   const checkMutation = useMutation({
     mutationKey: ["checkBigThree", login],
@@ -96,10 +72,11 @@ export default function BigThree() {
     onSuccess(result) {
       if (result) {
         setGlobalToast("3대 측정이 완료되었습니다.");
-        refetch();
+        result.isFirst === false ? calculateExp(result) : null;
       }
     },
   });
+
   return (
     <div className="flex flex-col align-center gap-8">
       <h2 className="text-center text-2xl font-semibold mb-4">3대 측정하기</h2>
