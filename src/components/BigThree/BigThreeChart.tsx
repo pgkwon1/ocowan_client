@@ -5,11 +5,16 @@ import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 
 export default function BigThreeChart() {
-  const { login } = useSelector((state: IRootReducer) => state.usersReducer);
+  const { login, isLogin } = useSelector(
+    (state: IRootReducer) => state.usersReducer
+  );
 
   const { data } = useQuery({
     queryKey: ["getBigThreeLatest", login],
-    queryFn: async () => await apiGetBigThreeLatest(),
+    queryFn: async () =>
+      isLogin
+        ? await apiGetBigThreeLatest()
+        : { data: { latestData: [], latestDate: [] } },
   });
   const ReactApexChart = dynamic(() => import("react-apexcharts"), {
     ssr: false,

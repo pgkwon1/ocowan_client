@@ -13,7 +13,9 @@ interface BigThreeResponse {
   pullReqCount: number;
 }
 export default function BigThree() {
-  const { login } = useSelector((state: IRootReducer) => state.usersReducer);
+  const { login, isLogin } = useSelector(
+    (state: IRootReducer) => state.usersReducer
+  );
   const {
     commitCount: currentCommitCount,
     issueCount: currentIssueCount,
@@ -28,7 +30,10 @@ export default function BigThree() {
   const increaseExp = useIncrementExp();
   const { data } = useQuery<BigThreeResponse>({
     queryKey: ["getBigThree", login],
-    queryFn: async () => await apiGetBigThree(),
+    queryFn: async () =>
+      isLogin
+        ? await apiGetBigThree()
+        : { pullReqCount: 0, issueCount: 0, commitCount: 0 },
   });
 
   const calculateExp = useCallback(

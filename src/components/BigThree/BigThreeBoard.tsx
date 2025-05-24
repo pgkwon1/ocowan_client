@@ -6,11 +6,16 @@ import { setGlobalToast } from "@/components/Toast";
 import CountUp from "react-countup";
 
 export default function BigThreeBoard() {
-  const { login } = useSelector((state: IRootReducer) => state.usersReducer);
+  const { login, isLogin } = useSelector(
+    (state: IRootReducer) => state.usersReducer
+  );
 
   const { data, isLoading } = useQuery({
     queryKey: ["getBigThree", login],
-    queryFn: async () => await apiGetBigThree(),
+    queryFn: async () =>
+      isLogin
+        ? await apiGetBigThree()
+        : { pullReqCount: 0, issueCount: 0, commitCount: 0 },
   });
 
   return (
