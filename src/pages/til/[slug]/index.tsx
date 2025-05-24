@@ -90,6 +90,8 @@ export default function TilView({
 
   if (isLoading) return <TilViewSkeleton />;
 
+  // data 타입 가드.
+  if (!data) return false;
   return (
     <div className="container mx-auto p-4 max-w-4xl">
       <div className="mb-4">
@@ -240,6 +242,14 @@ export const getServerSideProps = async (
 ) => {
   const { slug: slugString, page, category, order } = context.query;
   const slug = typeof slugString === "string" ? slugString.split("-")[1] : "";
+  if (!slug) {
+    return {
+      redirect: {
+        destination: `/til`,
+        permanent: false,
+      },
+    };
+  }
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
     queryKey: ["getTil", slug],
