@@ -7,7 +7,9 @@ import { useSelector } from "react-redux";
 
 export default function Levels() {
   // 현재 진행률 계산
-  const { levels } = useSelector((state: IRootReducer) => state.usersReducer);
+  const { levels, isLogin } = useSelector(
+    (state: IRootReducer) => state.usersReducer
+  );
   const [levelData, setLevelData] = useState({
     currentLevel: 0, //현재 레벨
     currentExp: 0, // 현재 경험치
@@ -16,18 +18,20 @@ export default function Levels() {
   });
 
   useEffect(() => {
+    if (!isLogin) return;
+
     const currentLevel = levels.level ?? 0;
     const currentExp = levels.exp ?? 0;
     const nextLevelPoints = levelList[currentLevel].expMin;
 
     const progress = Math.min((currentExp / nextLevelPoints) * 100, 100);
 
-    setLevelData((current) => ({
+    setLevelData({
       currentLevel,
       currentExp,
       nextLevelPoints,
       progress,
-    }));
+    });
   }, [levels]);
   return (
     <div className="w-full max-w-md mx-auto p-4 bg-white shadow-lg rounded-lg">

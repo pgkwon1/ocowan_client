@@ -17,6 +17,8 @@ import TilSkeleton from "@/components/Til/Skeleton/Index";
 import { useRouter } from "next/router";
 import Paginate from "@/components/Pagination";
 import { UserProfile } from "@/components/Profile";
+import { useSelector } from "react-redux";
+import { IRootReducer } from "@/store/reducer.dto";
 
 export interface TilAttribute {
   category: string;
@@ -59,6 +61,8 @@ export default function TilList({
 
     placeholderData: keepPreviousData,
   });
+
+  const { login } = useSelector((state: IRootReducer) => state.usersReducer);
   const onPageChange = (page: number) => {
     setPage(page);
   };
@@ -241,8 +245,13 @@ export default function TilList({
       <div className="flex justify-end mt-2">
         <button
           type="button"
-          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          className={` ${
+            !login
+              ? "disabled:cursor-not-allowed bg-gray-400 text-gray-100"
+              : "bg-blue-700 hover:bg-blue-800 text-white"
+          }  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
           onClick={() => router.push(`/til/write`)}
+          disabled={!login ? true : false}
         >
           작성
         </button>

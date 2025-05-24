@@ -4,7 +4,16 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 
 export default function Header() {
-  const afterLoginMenu = [
+  const { isLogin, login } = useSelector(
+    (state: IRootReducer) => state.usersReducer
+  );
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsOpen((current) => !current);
+  };
+
+  const menuList = [
     {
       name: "3대측정",
       href: "/bigthree/",
@@ -17,30 +26,10 @@ export default function Header() {
       name: "TIL",
       href: "/til/",
     },
-    {
-      name: "로그아웃",
-      href: "/member/logout",
-    },
+    isLogin
+      ? { name: "로그아웃", href: "/member/logout" }
+      : { name: "로그인", href: "/member/login" },
   ];
-  const beforeLoginMenu = [
-    {
-      name: "로그인",
-      href: "/",
-    },
-    {
-      name: "TIL",
-      href: "/til/",
-    },
-  ];
-  const { isLogin, login } = useSelector(
-    (state: IRootReducer) => state.usersReducer
-  );
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleMenu = () => {
-    setIsOpen((current) => !current);
-  };
-
   return (
     <div className="min-h-40 flex flex-col">
       <header className="py-6 px-8 flex justify-center items-center gap-8 bg-gray-100 dark:bg-gray-800 shadow-md rounded-lg">
@@ -52,21 +41,13 @@ export default function Header() {
 
         {/* PC에서 보이는 메뉴 */}
         <div className="hidden md:flex flex-row gap-8 items-center xs:text-base">
-          {isLogin && login
-            ? afterLoginMenu.map((menu, key) => (
-                <Link href={menu.href} key={key}>
-                  <button className="text-3xl text-black font-bold">
-                    {menu.name}
-                  </button>
-                </Link>
-              ))
-            : beforeLoginMenu.map((menu, key) => (
-                <Link href={menu.href} key={key}>
-                  <button className="text-3xl text-black font-bold">
-                    {menu.name}
-                  </button>
-                </Link>
-              ))}
+          {menuList.map((menu, key) => (
+            <Link href={menu.href} key={key}>
+              <button className="text-3xl text-black font-bold">
+                {menu.name}
+              </button>
+            </Link>
+          ))}
         </div>
 
         {/* 모바일에서 보이는 햄버거 메뉴 */}
@@ -90,21 +71,13 @@ export default function Header() {
           {isOpen && (
             <div className="absolute top-12 right-0 w-48 bg-white rounded-lg shadow-lg p-4 z-50">
               <ul>
-                {isLogin && login
-                  ? afterLoginMenu.map((menu, key) => (
-                      <li className="py-2" key={key}>
-                        <Link href={menu.href} className="text-gray-800">
-                          {menu.name}
-                        </Link>
-                      </li>
-                    ))
-                  : beforeLoginMenu.map((menu, key) => (
-                      <li className="py-2" key={key}>
-                        <Link href={menu.href} className="text-gray-800">
-                          {menu.name}
-                        </Link>
-                      </li>
-                    ))}
+                {menuList.map((menu, key) => (
+                  <li className="py-2" key={key}>
+                    <Link href={menu.href} className="text-gray-800">
+                      {menu.name}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </div>
           )}

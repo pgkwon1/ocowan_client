@@ -23,6 +23,7 @@ export default function TilCommentComponent({
   til_id,
   writerLogin,
 }: CommentComponentProps) {
+  const { isLogin } = useSelector((state: IRootReducer) => state.usersReducer);
   const [contents, setContents] = useState("");
   const [menuData, setMenuData] = useState({
     commentId: "",
@@ -41,7 +42,6 @@ export default function TilCommentComponent({
   });
   const { users_id } = useSelector((state: IRootReducer) => state.usersReducer);
 
-  const router = useRouter();
   const {
     data: tilComments,
     isLoading,
@@ -239,11 +239,8 @@ export default function TilCommentComponent({
                 ""
               )}
             </div>
-            {/* More Options */}
-            <button className="text-gray-400 hover:text-gray-600"> </button>
           </div>
 
-          {/* Content */}
           <div className="mt-4 text-gray-700">
             {editData.isEdit && editData.commentId === comment.id ? (
               <div className="flex flex-row gap-2">
@@ -274,13 +271,19 @@ export default function TilCommentComponent({
 
       <div className="add-comment">
         <textarea
-          className="w-full border rounded-lg p-2 mb-4"
+          disabled={isLogin ? false : true}
+          className="w-full border rounded-lg p-2 mb-4 disabled:cursor-not-allowed"
           rows={3}
           onChange={handleComment}
           value={contents}
         />
         <button
-          className="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700"
+          disabled={isLogin ? false : true}
+          className={`${
+            !isLogin
+              ? "disabled:cursor-not-allowed bg-gray-400 text-gray-100"
+              : "bg-blue-600 hover:bg-blue-800 text-white"
+          } px-4 py-2 font-medium rounded-lg  disabled:cursor-not-allowed`}
           onClick={handleWrite}
         >
           작성

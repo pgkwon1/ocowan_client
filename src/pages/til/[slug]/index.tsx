@@ -2,7 +2,12 @@ import React, { useEffect, useMemo, useState } from "react";
 import moment from "moment";
 import "moment/locale/ko";
 import { GetServerSidePropsContext } from "next";
-import { useQuery } from "@tanstack/react-query";
+import {
+  dehydrate,
+  QueryClient,
+  usePrefetchQuery,
+  useQuery,
+} from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { apiGetTil } from "@/api/til/til";
 import "react-quill/dist/quill.snow.css";
@@ -69,23 +74,23 @@ export default function TilView({
   slug: string;
   page: number;
   category: string;
-  string: string;
   order: string;
 }) {
   const router = useRouter();
   const { users_id } = useSelector((state: IRootReducer) => state.usersReducer);
   const [isTilMenuVisible, setTilMenuVisible] = useState(false);
   const [isDeleteVisible, setDeleteVisible] = useState(false);
-  const { data, isLoading, isSuccess } = useQuery<TilViewAttribute>({
+
+  const { data, isLoading } = useQuery<TilViewAttribute>({
     queryKey: ["getTil", slug],
     queryFn: async () => await apiGetTil(slug),
   });
 
   const EmojiComponent = useMemo(() => Emoji, []);
 
-  return isLoading ? (
-    <TilViewSkeleton />
-  ) : data ? (
+  if (isLoading) return <TilViewSkeleton />;
+
+  return (
     <div className="container mx-auto p-4 max-w-4xl">
       <div className="mb-4">
         <div className="flex flex-col gap-3 mb-4">
@@ -227,23 +232,26 @@ export default function TilView({
         </button>
       </div>
     </div>
-  ) : (
-    ""
   );
 }
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
-  const { slug, page, category, order } = context.query;
-  let splitSlug;
-  splitSlug = typeof slug === "string" ? slug.split("-")[1] : slug;
+  const { slug: slugString, page, category, order } = context.query;
+  const slug = typeof slugString === "string" ? slugString.split("-")[1] : "";
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery({
+    queryKey: ["getTil", slug],
+    queryFn: async () => await apiGetTil(slug),
+  });
   return {
     props: {
-      slug: splitSlug,
+      slug,
       page: page ?? 1,
       category: category ?? "전체",
       order: order ?? "createdAt",
+      dehydratedProps: dehydrate(queryClient),
     },
   };
 };

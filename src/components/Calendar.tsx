@@ -1,6 +1,8 @@
 import "react-calendar/dist/Calendar.css";
 import Calendar from "react-calendar";
 import moment from "moment";
+import "moment/locale/ko"; // 한글 로케일 import (필수)
+
 import { useQuery } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { apiGetOcowan } from "@/api/ocowan";
@@ -15,11 +17,13 @@ interface OcowanData {
 type OcowanResponse = OcowanData[];
 
 export default function OcowanCalendar() {
-  const { login } = useSelector((state: IRootReducer) => state.usersReducer);
+  const { isLogin, login } = useSelector(
+    (state: IRootReducer) => state.usersReducer
+  );
   const dispatch = useDispatch();
   const { data, isSuccess } = useQuery<OcowanResponse>({
     queryKey: ["getOcowan", login],
-    queryFn: async () => await apiGetOcowan(login),
+    queryFn: async () => (isLogin ? await apiGetOcowan(login) : []),
   });
   useEffect(() => {
     if (isSuccess && data !== undefined) {
