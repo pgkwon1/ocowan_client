@@ -11,7 +11,9 @@ export default function BigThreeChart() {
     queryKey: ["getBigThreeLatest", login],
     queryFn: async () => await apiGetBigThreeLatest(),
   });
-  const ReactApexChart = dynamic(() => import("react-apexcharts"));
+  const ReactApexChart = dynamic(() => import("react-apexcharts"), {
+    ssr: false,
+  });
   return (
     <>
       <ReactApexChart
