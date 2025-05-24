@@ -5,7 +5,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import usersReducer from "./reducers/users.reducer";
 import ocowanReducer from "./reducers/ocowan.reducer";
 import bigthreeReducer from "./reducers/bigthree.reducer";
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
   usersReducer,
   ocowanReducer,
   bigthreeReducer,
