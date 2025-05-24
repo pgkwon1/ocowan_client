@@ -9,7 +9,7 @@ export interface UserProfile {
   bio: string;
 }
 export default function Profile() {
-  const { login, avatar_url, bio, followers, isLogin } = useSelector(
+  const { login, avatar_url, bio, followers } = useSelector(
     (state: IRootReducer) => state.usersReducer
   );
   return (
