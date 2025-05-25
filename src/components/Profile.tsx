@@ -46,7 +46,7 @@ export default function Profile() {
           </div>
         </div>
         <div className="flex justify-center items-center gap-2 px-2">
-          <Link href={`https://github.com/${login}`} target="_blank">
+          <Link href={`/member/profile/@${login}`}>
             <button className="flex text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 rounded-lg px-8 py-2.5 me-2 mb-2 font-extrabold text-xl mt-4">
               Profile
             </button>
