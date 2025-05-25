@@ -50,5 +50,5 @@ formDataApi.interceptors.request.use((request) => {
 });
 
 formDataApi.interceptors.response.use((response: AxiosResponse) => {
-  return response;
+  return response.data;
 });
