@@ -5,18 +5,13 @@ import "react-quill/dist/quill.snow.css";
 import "highlight.js/styles/atom-one-dark.css"; // 원하는 스타일로 변경 가능
 import ImageUploader from "quill-image-uploader";
 import "quill-image-uploader/dist/quill.imageUploader.min.css";
-import { formDataApi } from "@/modules/ApiInstance";
-
+interface IEditorProps {
+  editorRef: RefObject<ReactQuill>;
+  contents?: string;
+  uploadFn: (file: FormData) => Promise<{ url: string }>;
+}
 const Editor = forwardRef(
-  ({
-    editorRef,
-    uploadApiUrl = "/storages/upload",
-    contents = "",
-  }: {
-    editorRef: RefObject<ReactQuill>;
-    uploadApiUrl?: string;
-    contents?: string;
-  }) => {
+  ({ editorRef, contents = "", uploadFn }: IEditorProps) => {
     Quill.register("modules/ImageUploader", ImageUploader);
     const [value, setValue] = useState(contents);
 
@@ -48,9 +43,9 @@ const Editor = forwardRef(
     ];
     const imageHandler = async (file: File) => {
       const formData = new FormData();
-      formData.append("file", file);
-      const { data: response } = await formDataApi.post(uploadApiUrl, formData);
-      return response.data.url;
+      formData.append("tilImage", file);
+      const { url } = await uploadFn(formData);
+      return url;
     };
     const modules = useMemo(
       () => ({

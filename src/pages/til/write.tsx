@@ -1,4 +1,4 @@
-import { apiWriteTil } from "@/api/til/til";
+import { apiPutUploadImage, apiWriteTil } from "@/api/til/til";
 import { setGlobalToast } from "@/components/Toast";
 import { WRITE_TILCATEGORIES } from "@/constants/til.constants";
 import dynamic from "next/dynamic";
@@ -76,7 +76,7 @@ export default function TilWrite() {
     ssr: false,
   });
 
-  // 재 렌더링 될 경우 자식 컴포넌트도 새로 렌더링이 되기 때문에
+  // 재 렌더링 될 경우(부모에서 제목, 카테고리가 변경되는 경우) 자식 컴포넌트도 새로 렌더링이 되기 때문에
   // 내용이 초기화 되는 문제가 발생해 메모이제이션 필수
   const TilEditor = useMemo(() => React.memo(Editor), []);
 
@@ -111,7 +111,7 @@ export default function TilWrite() {
           </button>
         ))}
       </div>
-      <TilEditor editorRef={editorRef} />
+      <TilEditor uploadFn={apiPutUploadImage} editorRef={editorRef} />
 
       <button
         className={`w-1/2 p-2 w-full border border-gray-300 rounded-md shadow-sm hover:bg-gray-100 transition bg-gradient-to-br from-purple-600 to-blue-500 text-white`}

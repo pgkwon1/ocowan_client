@@ -1,6 +1,5 @@
-import { api } from "@/modules/ApiInstance";
+import { api, formDataApi } from "@/modules/ApiInstance";
 import { TilWriteAttributes } from "@/pages/til/write";
-
 export const apiGetListTil = async ({
   category,
   page,
@@ -87,5 +86,10 @@ export const apiDeleteComments = async (til_id: string, commentId: string) => {
       til_id,
     },
   });
+  return data;
+};
+
+export const apiPutUploadImage = async (file: FormData) => {
+  const { data } = await formDataApi.put(`/tils/upload`, file);
   return data;
 };
