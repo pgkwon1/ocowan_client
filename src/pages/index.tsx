@@ -32,12 +32,16 @@ export default function Home() {
           wrapper={(children) => <LoginOverlay>{children}</LoginOverlay>}
         >
           <Profile />
-          <GitHubCalendar
-            username={login}
-            errorMessage="로딩에 실패하였습니다 다시 로그인해주세요."
-            hideTotalCount={true}
-            hideColorLegend={true}
-          />
+          {isLogin ? (
+            <GitHubCalendar
+              username={login}
+              errorMessage="로딩에 실패하였습니다 다시 로그인해주세요."
+              hideTotalCount={true}
+              hideColorLegend={true}
+            />
+          ) : (
+            ""
+          )}
           <Ocowan />
           <Calendar />
         </ConditionalWrapper>
