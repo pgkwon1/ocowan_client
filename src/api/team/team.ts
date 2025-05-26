@@ -20,14 +20,14 @@ export const apiCreateTeam = async (teamData: {
   name: string;
   leader: string;
   description: string;
-  logo: File;
+  teamLogo: File;
 }) => {
   const formData = new FormData();
 
   formData.append("name", teamData.name);
   formData.append("leader", teamData.leader);
   formData.append("description", teamData.description);
-  formData.append("logo", teamData.logo);
+  formData.append("teamLogo", teamData.teamLogo);
 
   const { data } = await formDataApi.post(`/teams/create`, formData);
 
@@ -39,14 +39,14 @@ export const apiEditTeam = async (teamData: {
   name: string;
   leader: string;
   description: string;
-  logo: File;
+  teamLogo: File;
 }) => {
   const formData = new FormData();
   formData.append("id", teamData.id);
   formData.append("name", teamData.name);
   formData.append("leader", teamData.leader);
   formData.append("description", teamData.description);
-  formData.append("logo", teamData.logo);
+  formData.append("teamLogo", teamData.teamLogo);
   const { data } = await formDataApi.patch(`/teams/edit`, formData);
 
   return data;
