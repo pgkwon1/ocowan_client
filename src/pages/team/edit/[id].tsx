@@ -17,7 +17,7 @@ export default function TeamEdit({ id }: { id: string }) {
     name: "",
     leader: "",
     description: "",
-    logo: {} as File,
+    teamLogo: {} as File,
     oldFileLogo: "",
   });
 
@@ -46,7 +46,7 @@ export default function TeamEdit({ id }: { id: string }) {
         name,
         leader,
         description,
-        logo,
+        teamLogo: logo as File,
         oldFileLogo: logo as string,
       });
     }

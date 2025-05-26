@@ -1,4 +1,4 @@
-import { apiEditTil, apiGetTil } from "@/api/til/til";
+import { apiEditTil, apiGetTil, apiPutUploadImage } from "@/api/til/til";
 import { GetServerSidePropsContext } from "next";
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -124,7 +124,11 @@ export default function TilEdit({ slug }: { slug: string }) {
           </button>
         ))}
       </div>
-      <TilEditor contents={tilData.contents} editorRef={editorRef} />
+      <TilEditor
+        contents={tilData.contents}
+        editorRef={editorRef}
+        uploadFn={apiPutUploadImage}
+      />
 
       <button
         className={` ${
