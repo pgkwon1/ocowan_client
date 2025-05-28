@@ -1,34 +1,63 @@
-import { combineReducers } from "redux";
-import { persistReducer } from "redux-persist";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { createWrapper, HYDRATE } from "next-redux-wrapper";
+import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import { configureStore } from "@reduxjs/toolkit";
 import usersReducer from "./reducers/users.reducer";
-import ocowanReducer from "./reducers/ocowan.reducer";
 import bigthreeReducer from "./reducers/bigthree.reducer";
-export const rootReducer = combineReducers({
+import ocowanReducer from "./reducers/ocowan.reducer";
+
+const rootReducer = combineReducers({
   usersReducer,
-  ocowanReducer,
   bigthreeReducer,
 });
-const persistConfig = {
-  key:
-    typeof process.env.NEXT_PUBLIC_PERSIST_KEY === "string"
-      ? process.env.NEXT_PUBLIC_PERSIST_KEY
-      : "",
-  storage: storage,
-  whitelist: ["usersReducer", "ocowanReducer", "bigthreeReducer"],
+
+const reducer = (state: any, action: any) => {
+  if (action.type === HYDRATE) {
+    // 서버 상태와 클라이언트 상태를 깊은 병합
+    return {
+      ...state,
+      ...action.payload,
+      usersReducer: { ...state.usersReducer, ...action.payload.usersReducer },
+      bigthreeReducer: {
+        ...state.bigthreeReducer,
+        ...action.payload.bigthreeReducer,
+      },
+      ocowanReducer: {
+        ...state.ocowanReducer,
+        ...action.payload.ocowanReducer,
+      },
+    };
+  }
+  return rootReducer(state, action);
 };
 
-export const serverStore = configureStore({
-  reducer: rootReducer,
-  devTools: true,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({ serializableCheck: false }),
-});
-export const clientStore = configureStore({
-  reducer: persistReducer(persistConfig, rootReducer),
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: false,
-    }),
+const persistConfig = {
+  key: process.env.NEXT_PUBLIC_PERSIST_KEY ?? "default-persist",
+  storage,
+  whitelist: ["usersReducer", "bigthreeReducer", "ocowanReducer"],
+};
+const makeStore = () => {
+  const isServer = typeof window === "undefined";
+
+  if (isServer) {
+    // 서버: persist 미적용
+    return configureStore({
+      reducer: rootReducer,
+      middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
+    });
+  } else {
+    // 클라이언트: persist 적용
+    const persistedReducer = persistReducer(persistConfig, rootReducer);
+    const store = configureStore({
+      reducer: persistedReducer,
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({ serializableCheck: false }),
+    });
+    (store as any).__persistor = persistStore(store);
+    return store;
+  }
+};
+
+export const wrapper = createWrapper(makeStore, {
+  debug: process.env.NODE_ENV !== "production",
 });
