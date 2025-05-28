@@ -18,10 +18,52 @@ import { MutationCache, QueryCache } from "@tanstack/react-query";
 
 function App({ Component, ...rest }: AppProps) {
   const { store, props } = wrapper.useWrappedStore(rest);
+  const router = useRouter();
   const [queryClient] = useState(
     () =>
       new QueryClient({
-        // ... (기존 쿼리 설정 유지)
+        defaultOptions: {
+          queries: {
+            retry: 0,
+            staleTime: 120000,
+          },
+          mutations: {
+            retry: 0,
+          },
+        },
+        queryCache: new QueryCache({
+          onError(error) {
+            if (error instanceof AxiosError && error.response?.status === 401) {
+              setGlobalToast("다시 로그인 해주세요.");
+              router.push("/member/logout");
+            } else if (
+              error instanceof AxiosError &&
+              error.response?.status === 404
+            ) {
+              setGlobalToast("데이터를 불러오는데 실패하였습니다 .");
+              router.push("/");
+              return false;
+            } else {
+              setGlobalToast("오류가 발생하였습니다.", true);
+              return false;
+            }
+          },
+        }),
+        mutationCache: new MutationCache({
+          onError(error: any) {
+            if (error instanceof AxiosError && error.response !== undefined) {
+              const { status } = error.response;
+              if (status === 401) {
+                setGlobalToast("다시 로그인 해주세요.", true);
+                router.push("/member/logout");
+              } else {
+                setGlobalToast(error.response.data.message, true);
+              }
+            } else {
+              setGlobalToast("오류가 발생하였습니다.");
+            }
+          },
+        }),
       })
   );
   const [mounted, setMounted] = useState(false);
