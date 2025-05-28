@@ -6,9 +6,10 @@ import usersReducer from "./reducers/users.reducer";
 import bigthreeReducer from "./reducers/bigthree.reducer";
 import ocowanReducer from "./reducers/ocowan.reducer";
 
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
   usersReducer,
   bigthreeReducer,
+  ocowanReducer,
 });
 
 const reducer = (state: any, action: any) => {
