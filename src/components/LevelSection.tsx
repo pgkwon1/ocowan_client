@@ -3,7 +3,7 @@ import { EXPINFO, levelList } from "@/constants/levels.constants";
 
 export default function LevelSystemSection() {
   return (
-    <div className="bg-white rounded-lg shadow-md p-8 mb-8">
+    <div className="bg-white rounded-lg mb-8">
       <div className="flex items-center mb-6">
         <div className="bg-yellow-100 p-3 rounded-full mr-4">
           <svg

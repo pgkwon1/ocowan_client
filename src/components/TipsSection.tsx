@@ -10,7 +10,7 @@ export default function TipsSection() {
         </p>
       </div>
 
-      <section className="bg-white rounded-lg shadow-md p-8 mb-8">
+      <section className="bg-white rounded-lg mb-8">
         <div className="flex items-center mb-6">
           <div className="bg-indigo-100 p-3 rounded-full mr-4">
             <svg
@@ -86,7 +86,7 @@ export default function TipsSection() {
       </section>
 
       {/* 생산성 향상 섹션 */}
-      <section className="bg-white rounded-lg shadow-md p-8 mb-8">
+      <section className="bg-white rounded-lg mb-8">
         <div className="flex items-center mb-6">
           <div className="bg-green-100 p-3 rounded-full mr-4">
             <svg
@@ -146,7 +146,7 @@ export default function TipsSection() {
       </section>
 
       {/* 건강 관리 섹션 */}
-      <section className="bg-white rounded-lg shadow-md p-8">
+      <section className="bg-white rounded-lg">
         <div className="flex items-center mb-6">
           <div className="bg-red-100 p-3 rounded-full mr-4">
             <svg
