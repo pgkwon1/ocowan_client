@@ -15,6 +15,10 @@ export default function Header() {
 
   const menuList = [
     {
+      name: "대시보드",
+      href: "/member/profile/dashboard/",
+    },
+    {
       name: "3대측정",
       href: "/bigthree/",
     },
