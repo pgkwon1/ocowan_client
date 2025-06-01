@@ -26,7 +26,7 @@ export default function TeamEdit({ id }: { id: string }) {
     mutationFn: async () => await apiEditTeam(teamData),
 
     onSuccess(data) {
-      if (data.result) {
+      if (data) {
         setGlobalToast("수정 완료되었습니다.");
         router.push(`/team/${teamData.id}`);
       }
@@ -112,7 +112,7 @@ export default function TeamEdit({ id }: { id: string }) {
             type="file"
             onChange={(e) => {
               if (e.target.files !== null) {
-                setFormData("logo", e.target.files[0]);
+                setFormData("teamLogo", e.target.files[0]);
               }
             }}
           />
