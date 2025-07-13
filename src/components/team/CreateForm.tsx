@@ -21,9 +21,9 @@ export default function TeamCreateForm() {
   const createMutate = useMutation({
     mutationKey: ["createTeam"],
     mutationFn: async () => await apiCreateTeam(teamData),
-    onSuccess(response) {
+    onSuccess(data) {
       setGlobalToast("성공적으로 팀이 생성되었습니다.");
-      Router.push(`/team/${response.data.id}`);
+      Router.push(`/team/${data.id}`);
     },
   });
 
