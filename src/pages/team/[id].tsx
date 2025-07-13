@@ -6,8 +6,15 @@ import dynamic from "next/dynamic";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import {
+  Button,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+} from "@headlessui/react";
 import Link from "next/link";
+import DeleteModal from "@/components/team/Delete";
 
 interface ITeamInfo {
   name: string;
@@ -28,6 +35,7 @@ export default function TeamInfo({ id }: { id: string }) {
   const [teamMember, setTeamMember] = useState<ITeamMember[]>([]);
   const [chartData, setChartData] = useState<any[]>([]);
   const [isLeader, setIsLeader] = useState(false);
+  const [open, setOpen] = useState(false);
   const { login } = useSelector((state: IRootReducer) => state.usersReducer);
 
   const Chart = dynamic(() => import("react-apexcharts"));
@@ -135,7 +143,7 @@ export default function TeamInfo({ id }: { id: string }) {
           {isLeader ? (
             <div className="flex flex-row items-center gap-12">
               <TeamInvite isLeader={isLeader} id={id} />
-              <TeamMenu id={id} />
+              <TeamMenu id={id} setOpen={() => setOpen(true)} />
             </div>
           ) : (
             ``
@@ -195,11 +203,19 @@ export default function TeamInfo({ id }: { id: string }) {
         )}
       </div>
       <Chart width={"100%"} series={chartData} options={options} />
+      {open ? (
+        <DeleteModal
+          setModalOpen={() => setOpen((current) => !current)}
+          id={id}
+        />
+      ) : (
+        ""
+      )}
     </div>
   );
 }
 
-const TeamMenu = ({ id }: { id: string }) => {
+const TeamMenu = ({ id, setOpen }: { id: string; setOpen: () => void }) => {
   return (
     <Menu as="div" className="relative ml-3">
       <div>
@@ -231,12 +247,12 @@ const TeamMenu = ({ id }: { id: string }) => {
           </Link>
         </MenuItem>
         <MenuItem>
-          <Link
-            href={`/team/delete/${id}`}
-            className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
+          <Button
+            className="w-full block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
+            onClick={setOpen}
           >
             삭제
-          </Link>
+          </Button>
         </MenuItem>
       </MenuItems>
     </Menu>

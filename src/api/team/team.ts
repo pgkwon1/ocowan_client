@@ -77,3 +77,12 @@ export const apiJoinTeam = async (params: { [key: string]: string }) => {
   });
   return data;
 };
+
+export const apiDeleteTeam = async (team_id: string) => {
+  const { data } = await api.delete(`/teams/delete`, {
+    data: {
+      team_id,
+    },
+  });
+  return data;
+};
