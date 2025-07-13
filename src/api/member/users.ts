@@ -19,3 +19,8 @@ export const apiGetUser = async (login: string) => {
   const { data } = await api.get(`/users/${login}`);
   return data;
 };
+
+export const apiLogout = async () => {
+  const { data } = await api.post(`/users/logout`);
+  return data;
+};
