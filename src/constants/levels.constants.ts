@@ -44,7 +44,7 @@ export const levelList: levelList = [
   },
   {
     level: 7,
-    expMin: 210,
+    expMin: 2100,
     expMax: 2799,
   },
 
