@@ -53,7 +53,7 @@ export default function ProfileTilList({ id: users_id }: { id: string }) {
                   </span>
                   <h2
                     className="text-2xl font-bold cursor-pointer"
-                    onClick={() => router.push(`/til/${til.slug}-${til.title}`)}
+                    onClick={() => router.push(`/til/${til.title}-${til.slug}`)}
                   >
                     {til.title}
                   </h2>
