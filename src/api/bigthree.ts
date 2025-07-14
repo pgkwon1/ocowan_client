@@ -14,8 +14,11 @@ export const apiGetBigThree = async (login: string = "") => {
   };
 };
 
-export const apiGetBigThreeLatest = async () => {
-  const { data } = await api.get(`/bigthrees/latest`);
+export const apiGetBigThreeLatest = async (login?: string) => {
+  console.log(login);
+  const { data } = await api.get(
+    `/bigthrees/latest${login ? `/${login}` : ""}`
+  );
   const latestData = data.map(
     (day: any, index: number) =>
       day.pullReqCount + day.issueCount + day.commitCount

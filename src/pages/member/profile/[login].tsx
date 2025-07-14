@@ -20,7 +20,7 @@ export default function Profile({ login }: ProfileProps) {
 
   const { data: bigthree, isLoading: isBigthreeLoading } = useQuery({
     queryKey: ["getBigThree", login],
-    queryFn: async () => await apiGetBigThreeLatest(),
+    queryFn: async () => await apiGetBigThreeLatest(login),
   });
   const [bigthreeStatus, setBigthreeStatus] = useState({
     bigthreeLatest: 0,
@@ -29,14 +29,14 @@ export default function Profile({ login }: ProfileProps) {
 
   useEffect(() => {
     if (bigthree && !isBigthreeLoading) {
-      const bigthreeFirst = bigthree.data.latestData[0];
-      const bigthreeLatest = bigthree.data.latestData.slice(-1)[0];
+      const bigthreeFirst = bigthree.data.latestData[0] ?? 0;
+      const bigthreeLatest = bigthree.data.latestData.slice(-1)[0] ?? 0;
       const increaseBigThree =
         ((bigthreeLatest - bigthreeFirst) / bigthreeFirst) * 100;
 
       setBigthreeStatus({
         bigthreeLatest,
-        increaseBigThree,
+        increaseBigThree: increaseBigThree > 0 ? increaseBigThree : 0,
       });
     }
   }, [bigthree, isBigthreeLoading]);
