@@ -80,7 +80,7 @@ export default function Profile({ login }: ProfileProps) {
       setOcowanSequence(sequence);
     }
   }, [ocowan, isOcowanLoading]);
-  return isLoading ? (
+  return isLoading || !data ? (
     <ProfileSkeleton />
   ) : (
     <div className="flex flex-col gap-4">
