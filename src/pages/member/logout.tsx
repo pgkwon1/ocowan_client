@@ -13,12 +13,10 @@ export default function Logout() {
   const logoutMutate = useMutation({
     mutationKey: ["logout", login],
     mutationFn: async () => await apiLogout(),
-    onSuccess: () => {
-      dispatch(resetData());
-      router.push("/");
-    },
   });
   useEffect(() => {
+    dispatch(resetData());
+    router.push("/");
     logoutMutate.mutate();
   }, []);
 }
