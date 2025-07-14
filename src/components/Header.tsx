@@ -16,7 +16,7 @@ export default function Header() {
   const menuList = [
     {
       name: "대시보드",
-      href: "/member/profile/dashboard/",
+      href: "/member/dashboard/",
     },
     {
       name: "3대측정",
@@ -29,6 +29,10 @@ export default function Header() {
     {
       name: "TIL",
       href: "/til/",
+    },
+    {
+      name: "코드리뷰",
+      href: "/review/",
     },
     isLogin
       ? { name: "로그아웃", href: "/member/logout" }
