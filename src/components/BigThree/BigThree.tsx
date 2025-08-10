@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setGlobalToast } from "../Toast";
 import { EXPINFO } from "@/constants/levels.constants";
 import useIncrementExp from "@/hooks/increaseExp";
+import { setBigThree } from "@/store/reducers/bigthree.reducer";
 
 interface BigThreeResponse {
   commitCount: number;
@@ -28,6 +29,8 @@ export default function BigThree() {
     (currentPullReqCount ?? 0);
 
   const increaseExp = useIncrementExp();
+  const dispatch = useDispatch();
+
   const { data } = useQuery<BigThreeResponse>({
     queryKey: ["getBigThree", login],
     queryFn: async () =>
@@ -78,6 +81,14 @@ export default function BigThree() {
       if (result) {
         setGlobalToast("3대 측정이 완료되었습니다.");
         result.isFirst === false ? calculateExp(result) : null;
+        dispatch(
+          setBigThree({
+            commitCount: result.commitCount,
+            issueCount: result.issueCount,
+            pullReqCount: result.pullReqCount,
+            isCheck: true,
+          })
+        );
       }
     },
   });
