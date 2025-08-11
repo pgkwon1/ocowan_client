@@ -8,12 +8,6 @@ export default function BigThreePieChart({}) {
     (state: IRootReducer) => state.bigthreeReducer
   );
 
-  const [countData] = useState({
-    commitCount: commitCount ?? 0,
-    issueCount: issueCount ?? 0,
-    pullReqCount: pullReqCount ?? 0,
-  });
-
   const options: ApexCharts.ApexOptions = {
     labels: ["커밋", "이슈", "PR"],
     colors: ["#3b82f6", "#f59e0b", "#ef4444"],
@@ -27,11 +21,7 @@ export default function BigThreePieChart({}) {
     <div className="flex items-center justify-center">
       <ReactApexChart
         type={"pie"}
-        series={[
-          countData.commitCount,
-          countData.issueCount,
-          countData.pullReqCount,
-        ]}
+        series={[commitCount, issueCount, pullReqCount]}
         options={options}
       />
     </div>
